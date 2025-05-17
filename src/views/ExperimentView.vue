@@ -10,6 +10,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Card, Button } from '@arco-design/web-vue'; // 导入 Arco Design 组件
+
 export default defineComponent({
     name: 'ExperimentStart', // 组件名称，建议与文件名一致
     components: {

@@ -10,6 +10,7 @@ import localeCardList from '@/views/list/card/locale/zh-CN';
 
 import localeStepForm from '@/views/form/step/locale/zh-CN';
 import localeGroupForm from '@/views/form/group/locale/zh-CN';
+import localeNationalStandard from '@/views/NationalStandard/locale/zh-CN';
 
 import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
 
@@ -54,6 +55,7 @@ export default {
   ...localeCardList,
   ...localeStepForm,
   ...localeGroupForm,
+  ...localeNationalStandard,
   ...localeBasicProfile,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,

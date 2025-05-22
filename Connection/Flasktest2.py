@@ -30,7 +30,7 @@ def handle_ns_request():
     # 5. 返回成功响应
     return jsonify({
         'message': 'Model data received and processed successfully!',
-        'code': 200,
+        'code': 20000,
         'received_model': model_data # 也可以将收到的 model 返回给前端确认
     }), 200
 

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="container">
         <Breadcrumb :items="['Mat', 'Mat.form']" />
         <a-form ref="formRef" layout="vertical" :model="formData">
@@ -24,14 +24,42 @@
             </div>
         </a-form>
     </div>
-</template>
+</template> -->
 
+<template>
+    <div class="container">
+        <Breadcrumb :items="['Mat', 'Mat.form']" />
+        <a-form ref="formRef" layout="vertical" :model="formData" @submit="onSubmitClick">
+            <a-space direction="vertical" :size="16">
+                <a-card class="general-card" :bordered="false">
+                    <template #title>
+                        {{ $t('Mat.form.title') }}
+                    </template>
+                    <a-form-item :label="$t('Mat.form.label.name')" field="name">
+                        <a-textarea v-model="formData.name" :placeholder="$t('Mat.form.placeholder.name')" />
+                    </a-form-item>
+                </a-card>
+            </a-space>
+            <div class="actions">
+                <a-space>
+                    <a-button>
+                        {{ $t('groupForm.reset') }}
+                    </a-button>
+                    <a-button type="primary" :loading="loading" @click="onSubmitClick">
+                        {{ $t('groupForm.submit') }}
+                    </a-button>
+                </a-space>
+            </div>
+        </a-form>
+    </div>
+</template>
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { FormInstance } from '@arco-design/web-vue/es/form';
 import useLoading from '@/hooks/loading';
+import axios from 'axios';
 
-const formData = ref({});
+const formData = ref({name: ''});
 const formRef = ref<FormInstance>();
 const { loading, setLoading } = useLoading();
 const onSubmitClick = async () => {
@@ -42,6 +70,13 @@ const onSubmitClick = async () => {
     setTimeout(() => {
         setLoading(false);
     }, 1000);
+    axios.post('/api/Mat', formRef.value?.model)
+        .then((response) => {
+            console.log(response.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 </script>
 

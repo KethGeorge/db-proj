@@ -4,7 +4,7 @@ from flask_cors import CORS # 导入 CORS
 app = Flask(__name__)
 CORS(app) # 启用 CORS，允许所有来源。生产环境请更精细配置。
 
-@app.route('/api/NS', methods=['POST'])
+@app.route('/api/Mat', methods=['POST'])
 def handle_ns_request():
     # 1. 检查请求是否为 JSON 格式
     if not request.is_json:

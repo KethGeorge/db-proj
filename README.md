@@ -10,3 +10,7 @@ npm run dev
 随后启动 /Connection/TestBetween.py.
 
 在 http://localhost:5173/national-standard 中尝试提交，可以看到后台向数据库传入的文件。
+
+## 存在的问题（Updated 2025/05/28）
+
+- 实验报告中格式需要统一，不能出现疑似 AI 生成的格式吧。

@@ -27,16 +27,6 @@ const experimentRoute: RouteRecordRaw[] = [
           roles: ['admin', 'user'], // 可选：指定哪些角色可以访问
         },
       },
-      // 如果未来还有其他与实验相关的页面，可以在这里添加更多子路由
-      // {
-      //   path: 'results',
-      //   name: 'experimentResults',
-      //   component: () => import('@/views/experiment/results/index.vue'),
-      //   meta: {
-      //     locale: 'menu.experiment.results',
-      //     requiresAuth: true,
-      //   },
-      // },
     ],
   },
 ];

@@ -345,7 +345,7 @@ def get_user_menu():
         #         },
         #     ],
         # }
-    ]
+     ]
 
     return success_response_wrap(base_menu_list)
 @app.route('/api/user/info', methods=['POST']) # <--- 这里改为 POST

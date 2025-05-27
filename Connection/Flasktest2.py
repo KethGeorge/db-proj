@@ -4,7 +4,9 @@ from flask_cors import CORS # 导入 CORS
 app = Flask(__name__)
 CORS(app) # 启用 CORS，允许所有来源。生产环境请更精细配置。
 
-@app.route('/api/Mat', methods=['POST'])
+@app.route('/api/NS', methods=['POST'])
+@app.route('/api/Protocol', methods=['POST'])  # 支持带斜杠的路径
+@app.route('/api/Mat', methods=['POST'])   # 支持不带斜杠的路径
 def handle_ns_request():
     # 1. 检查请求是否为 JSON 格式
     if not request.is_json:
@@ -17,9 +19,21 @@ def handle_ns_request():
     # 3. 检查 'model' 字段是否存在
     # 4. 获取 model 数据
     model_data = data
+     # 3. 获取请求的路径，以便区分来源
+    # request.path 会返回请求的完整路径，例如 '/api/NS', '/api/Protocol', '/api/Mat'
+    request_source_path = request.path
+
+    # 4. 根据路径判断来源
+    source_module = "Unknown"
+    if request_source_path == '/api/NS':
+        source_module = "NS"
+    elif request_source_path == '/api/Protocol':
+        source_module = "Protocol"
+    elif request_source_path == '/api/Mat':
+        source_module = "Mat"
 
     print("--------------------------------------------------")
-    print("Received JSON data:")
+    print(f"Received JSON data from: {request_source_path} ({source_module} module)")
     print(f"Full request data: {data}") # 打印完整的请求数据
     print("\n--- Model Content ---")
     # 为了更好地打印嵌套结构，可以使用 json.dumps

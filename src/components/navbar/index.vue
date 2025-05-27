@@ -24,44 +24,6 @@
     </div>
     <ul class="right-side">
       <li>
-        <a-tooltip :content="$t('settings.search')">
-          <a-button class="nav-btn" type="outline" :shape="'circle'">
-            <template #icon>
-              <icon-search />
-            </template>
-          </a-button>
-        </a-tooltip>
-      </li>
-      <li>
-        <a-tooltip :content="$t('settings.language')">
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            @click="setDropDownVisible"
-          >
-            <template #icon>
-              <icon-language />
-            </template>
-          </a-button>
-        </a-tooltip>
-        <a-dropdown trigger="click" @select="changeLocale as any">
-          <div ref="triggerBtn" class="trigger-btn"></div>
-          <template #content>
-            <a-doption
-              v-for="item in locales"
-              :key="item.value"
-              :value="item.value"
-            >
-              <template #icon>
-                <icon-check v-show="item.value === currentLocale" />
-              </template>
-              {{ item.label }}
-            </a-doption>
-          </template>
-        </a-dropdown>
-      </li>
-      <li>
         <a-tooltip
           :content="
             theme === 'light'
@@ -81,33 +43,6 @@
             </template>
           </a-button>
         </a-tooltip>
-      </li>
-      <li>
-        <a-tooltip :content="$t('settings.navbar.alerts')">
-          <div class="message-box-trigger">
-            <a-badge :count="9" dot>
-              <a-button
-                class="nav-btn"
-                type="outline"
-                :shape="'circle'"
-                @click="setPopoverVisible"
-              >
-                <icon-notification />
-              </a-button>
-            </a-badge>
-          </div>
-        </a-tooltip>
-        <a-popover
-          trigger="click"
-          :arrow-style="{ display: 'none' }"
-          :content-style="{ padding: 0, minWidth: '400px' }"
-          content-class="message-popover"
-        >
-          <div ref="refBtn" class="ref-btn"></div>
-          <template #content>
-            <message-box />
-          </template>
-        </a-popover>
       </li>
       <li>
         <a-tooltip
@@ -148,9 +83,10 @@
         <a-dropdown trigger="click">
           <a-avatar
             :size="32"
-            :style="{ marginRight: '8px', cursor: 'pointer' }"
+            :style="{ marginRight: '16px', cursor: 'pointer' }"
+            :auto-fix-font-size="true"
           >
-            <img alt="avatar" :src="avatar" />
+            <IconUser />
           </a-avatar>
           <template #content>
             <a-doption>
@@ -158,22 +94,6 @@
                 <icon-tag />
                 <span>
                   {{ $t('messageBox.switchRoles') }}
-                </span>
-              </a-space>
-            </a-doption>
-            <a-doption>
-              <a-space @click="$router.push({ name: 'Info' })">
-                <icon-user />
-                <span>
-                  {{ $t('messageBox.userCenter') }}
-                </span>
-              </a-space>
-            </a-doption>
-            <a-doption>
-              <a-space @click="$router.push({ name: 'Setting' })">
-                <icon-settings />
-                <span>
-                  {{ $t('messageBox.userSettings') }}
                 </span>
               </a-space>
             </a-doption>
@@ -209,9 +129,6 @@
   const { changeLocale, currentLocale } = useLocale();
   const { isFullscreen, toggle: toggleFullScreen } = useFullscreen();
   const locales = [...LOCALE_OPTIONS];
-  const avatar = computed(() => {
-    return userStore.avatar;
-  });
   const theme = computed(() => {
     return appStore.theme;
   });

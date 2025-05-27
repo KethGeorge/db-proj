@@ -27,16 +27,6 @@ const nationalStandardRoute: RouteRecordRaw[] = [
                     roles: ['admin', 'user'], // 可选：指定哪些角色可以访问，请根据您的权限设计调整
                 },
             },
-            // 如果未来还有其他与国标相关的页面，可以在这里添加更多子路由
-            // {
-            //   path: 'detail/:id', // 示例：国标详情页
-            //   name: 'nationalStandardDetail',
-            //   component: () => import('@/views/NationalStandard/detail/index.vue'), // 假设详情页组件路径
-            //   meta: {
-            //     locale: 'menu.nationalStandard.detail',
-            //     requiresAuth: true,
-            //   },
-            // },
         ],
     },
 ];

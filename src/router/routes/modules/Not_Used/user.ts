@@ -1,5 +1,5 @@
-import { DEFAULT_LAYOUT } from '../base';
-import { AppRouteRecordRaw } from '../types';
+import { DEFAULT_LAYOUT } from '../../base';
+import { AppRouteRecordRaw } from '../../types';
 
 const USER: AppRouteRecordRaw = {
   path: '/user',

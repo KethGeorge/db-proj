@@ -34,7 +34,9 @@ import { ref } from 'vue';
 import { FormInstance } from '@arco-design/web-vue/es/form';
 import useLoading from '@/hooks/loading';
 import axios from 'axios';
+import { useUserStore } from '@/store';
 
+const user = useUserStore();
 const formData = ref({name: '', description: ''});
 const formRef = ref<FormInstance>();
 const { loading, setLoading } = useLoading();
@@ -47,7 +49,12 @@ const onSubmitClick = async () => {
         setLoading(false);
     }, 1000);
     // Write yout code here!
-    axios.post('/api/NS', formRef.value?.model)
+    const dataToSend = {
+      ...formRef.value?.model, // 复制表单中已有的数据
+      userName: user.userInfo.name // 添加或覆盖 userName
+    };
+
+    axios.post('/api/NS', dataToSend)
         .then((response) => {
             console.log(response.data);
         })

@@ -71,7 +71,7 @@
 
     &-sub-title {
       margin-top: 8px;
-      color: var(--color-text-3);
+      color: var(--color-text-4);
       font-size: 14px;
       line-height: 22px;
     }

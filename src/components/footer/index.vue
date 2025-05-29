@@ -1,5 +1,5 @@
 <template>
-  <a-layout-footer class="footer">Arco Pro</a-layout-footer>
+  <a-layout-footer class="footer"> 凝胶时间测定实验平台 </a-layout-footer>
 </template>
 
 <script lang="ts" setup></script>

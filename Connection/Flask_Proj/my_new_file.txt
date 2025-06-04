@@ -1,2 +1,863 @@
-这是我写入的第一行内容。
-这是第二行。
+接下来我们需要用 Vue + Flask + MySQL 框架搭建一个用户创建界面，Gemini，你的任务是根据下面给出的一个示例 Vue 代码和 Flask 框架，写出对应相似功能的业务代码，其中有 3 段：
+
+第一段 Vue 代码 index.vue 是添加设备表单的主页表单。
+
+第二段 Flask 代码 Device.py 是对应处理数据库的内容。
+
+第三段 Flask 代码 app.py 是主程序代码。
+
+附带的两张图分别是用户所包含的信息和 Flask 代码的结构。
+
+注意，由于这是一个临时的项目，我们不需要对密码进行加密。
+
+
+
+<template>
+
+    <div class="container">
+
+        <Breadcrumb :items="['Device', 'Device.form']" />
+
+        <a-form ref="formRef" layout="vertical" :model="formData" @submit="onSubmitClick">
+
+            <a-space direction="vertical" :size="16">
+
+                <a-card class="general-card" :bordered="false">
+
+                    <template #title>
+
+                        {{ $t('device.form.title') }}
+
+                    </template>
+
+                    <a-row :gutter="16">
+
+                        <a-col :span="12">
+
+                            <a-form-item :label="$t('device.form.label.deviceNo')" field="deviceNo"
+
+                                :rules="[{ required: true, message: '设备编号不能为空' }]">
+
+                                <a-input v-model="formData.deviceNo"
+
+                                    :placeholder="$t('device.form.placeholder.deviceNo')" />
+
+                            </a-form-item>
+
+                        </a-col>
+
+                        <a-col :span="12">
+
+                            <a-form-item :label="$t('device.form.label.deviceName')" field="deviceName"
+
+                                :rules="[{ required: true, message: '设备名称不能为空' }]">
+
+                                <a-input v-model="formData.deviceName"
+
+                                    :placeholder="$t('device.form.placeholder.deviceName')" />
+
+                            </a-form-item>
+
+                        </a-col>
+
+                    </a-row>
+
+
+
+                    <a-form-item :label="$t('device.form.label.deviceUsage')" field="deviceUsage">
+
+                        <a-textarea v-model="formData.deviceUsage"
+
+                            :placeholder="$t('device.form.placeholder.deviceUsage')"
+
+                            :auto-size="{ minRows: 2, maxRows: 4 }" />
+
+                    </a-form-item>
+
+
+
+                    <a-form-item :label="$t('device.form.label.dStartTime')" field="dStartTime">
+
+                        <a-checkbox v-model="formData.dStartTime_disabled" class="date-time-checkbox">
+
+                            {{ $t('device.form.label.disableDateTime') }}
+
+                        </a-checkbox>
+
+                        <a-row :gutter="8" :class="{ 'disabled-row': formData.dStartTime_disabled }">
+
+                            <a-col :span="12">
+
+                                <a-date-picker v-model="formData.dStartTime_date" style="width: 100%;"
+
+                                    :placeholder="$t('device.form.placeholder.dStartTimeDate')"
+
+                                    :disabled="formData.dStartTime_disabled" />
+
+                            </a-col>
+
+                            <a-col :span="12">
+
+                                <a-time-picker v-model="formData.dStartTime_time" style="width: 100%;" format="HH:mm:ss"
+
+                                    :placeholder="$t('device.form.placeholder.dStartTimeTime')"
+
+                                    :disabled="formData.dStartTime_disabled" />
+
+                            </a-col>
+
+                        </a-row>
+
+                    </a-form-item>
+
+
+
+                    <a-form-item :label="$t('device.form.label.dmt')" field="dmt">
+
+                        <a-checkbox v-model="formData.dmt_disabled" class="date-time-checkbox">
+
+                            {{ $t('device.form.label.disableDateTime') }}
+
+                        </a-checkbox>
+
+                        <a-row :gutter="8" :class="{ 'disabled-row': formData.dmt_disabled }">
+
+                            <a-col :span="12">
+
+                                <a-date-picker v-model="formData.dmt_date" style="width: 100%;"
+
+                                    :placeholder="$t('device.form.placeholder.dmtDate')"
+
+                                    :disabled="formData.dmt_disabled" />
+
+                            </a-col>
+
+                            <a-col :span="12">
+
+                                <a-time-picker v-model="formData.dmt_time" style="width: 100%;" format="HH:mm:ss"
+
+                                    :placeholder="$t('device.form.placeholder.dmtTime')"
+
+                                    :disabled="formData.dmt_disabled" />
+
+                            </a-col>
+
+                        </a-row>
+
+                    </a-form-item>
+
+
+
+                    <a-form-item :label="$t('device.form.label.dStopTime')" field="dStopTime">
+
+                        <a-checkbox v-model="formData.dStopTime_disabled" class="date-time-checkbox">
+
+                            {{ $t('device.form.label.disableDateTime') }}
+
+                        </a-checkbox>
+
+                        <a-row :gutter="8" :class="{ 'disabled-row': formData.dStopTime_disabled }">
+
+                            <a-col :span="12">
+
+                                <a-date-picker v-model="formData.dStopTime_date" style="width: 100%;"
+
+                                    :placeholder="$t('device.form.placeholder.dStopTimeDate')"
+
+                                    :disabled="formData.dStopTime_disabled" />
+
+                            </a-col>
+
+                            <a-col :span="12">
+
+                                <a-time-picker v-model="formData.dStopTime_time" style="width: 100%;" format="HH:mm:ss"
+
+                                    :placeholder="$t('device.form.placeholder.dStopTimeTime')"
+
+                                    :disabled="formData.dStopTime_disabled" />
+
+                            </a-col>
+
+                        </a-row>
+
+                    </a-form-item>
+
+
+
+                </a-card>
+
+            </a-space>
+
+            <div class="actions">
+
+                <a-space>
+
+                    <a-button @click="resetForm">
+
+                        {{ $t('groupForm.reset') }}
+
+                    </a-button>
+
+                    <a-button type="primary" :loading="loading" @click="onSubmitClick">
+
+                        {{ $t('groupForm.submit') }}
+
+                    </a-button>
+
+                </a-space>
+
+            </div>
+
+        </a-form>
+
+    </div>
+
+</template>
+
+
+
+<script lang="ts" setup>
+
+import { ref, reactive } from 'vue';
+
+import { FormInstance } from '@arco-design/web-vue/es/form';
+
+import { Message } from '@arco-design/web-vue';
+
+import useLoading from '@/hooks/loading';
+
+import axios, { AxiosResponse }  from 'axios';
+
+import { useUserStore } from '@/store';
+
+
+
+const user = useUserStore();
+
+const formRef = ref<FormInstance>();
+
+const { loading, setLoading } = useLoading();
+
+
+
+// 定义表单数据结构
+
+const formData = reactive({
+
+    deviceNo: '',
+
+    deviceName: '',
+
+    deviceUsage: '',
+
+    // DStartTime 相关
+
+    dStartTime_disabled: false,
+
+    dStartTime_date: undefined as Date | undefined, // undefined 可以更好地表示未选择
+
+    dStartTime_time: '' as string, // 字符串 'HH:mm:ss'
+
+
+
+    // DMT 相关
+
+    dmt_disabled: false,
+
+    dmt_date: undefined as Date | undefined,
+
+    dmt_time: '' as string,
+
+
+
+    // DStopTime 相关
+
+    dStopTime_disabled: false,
+
+    dStopTime_date: undefined as Date | undefined,
+
+    dStopTime_time: '' as string,
+
+});
+
+
+
+// 辅助函数：将 Date 和时间字符串合并为 ISO 字符串
+
+const combineDateTime = (dateObj: Date | undefined, timeStr: string): string | null => {
+
+    if (!dateObj) {
+
+        return null;
+
+    }
+
+
+
+    // *** 关键检查：确保 dateObj 是一个 Date 实例 ***
+
+    if (!(dateObj instanceof Date)) {
+
+        console.warn("combineDateTime 收到一个非 Date 对象，尝试转换为 Date:", dateObj);
+
+        // 如果 dateObj 是一个有效的日期字符串，可以尝试转换
+
+        try {
+
+            const parsedDate = new Date(dateObj);
+
+            if (!Number.isNaN(parsedDate.getTime())) { // 检查是否是有效日期
+
+                dateObj = parsedDate;
+
+            } else {
+
+                console.error("combineDateTime 无法将非 Date 对象转换为有效日期:", dateObj);
+
+                return null; // 无法转换，返回 null
+
+            }
+
+        } catch (e) {
+
+            console.error("combineDateTime 转换日期时发生错误:", e);
+
+            return null;
+
+        }
+
+    }
+
+
+
+
+
+    const year = dateObj.getFullYear();
+
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+
+    const day = dateObj.getDate().toString().padStart(2, '0');
+
+
+
+    // 默认时间为 '00:00:00' 如果 timeStr 为空
+
+    const timePart = timeStr || '00:00:00';
+
+
+
+    // 组合成一个标准日期时间字符串，如 'YYYY-MM-DDTHH:mm:ss'
+
+    return `${year}-${month}-${day}T${timePart}`;
+
+};
+
+// 定义一个接口来描述后端 API 响应的结构
+
+interface ApiResponse<T = any> {
+
+    code: number;
+
+    message: string;
+
+    data: T; // 这里 T 是业务数据的类型，例如 { deviceName: string; deviceNo: string; }
+
+}
+
+const onSubmitClick = async () => {
+
+    const errors = await formRef.value?.validate();
+
+
+
+    if (!errors) {
+
+        setLoading(true);
+
+        try {
+
+            const dataToSend: { [key: string]: any } = {
+
+                deviceNo: formData.deviceNo,
+
+                deviceName: formData.deviceName,
+
+                deviceUsage: formData.deviceUsage,
+
+                operator: user.userInfo.name || 'unknown_user',
+
+            };
+
+
+
+            // ---- 关键修改部分 ----
+
+
+
+            // ---- 结束修改部分 ----
+
+
+
+            // 处理 DStartTime
+
+            let dStartTimeDateObj: Date | undefined;
+
+            if (formData.dStartTime_date instanceof Date) {
+
+                dStartTimeDateObj = formData.dStartTime_date;
+
+            } else if (formData.dStartTime_date) { // 如果不是 Date 对象但有值（可能是字符串）
+
+                const parsedDate = new Date(formData.dStartTime_date);
+
+                dStartTimeDateObj = Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+
+            } else {
+
+                dStartTimeDateObj = undefined; // 明确为 undefined
+
+            }
+
+
+
+            let dmtDateObj: Date | undefined;
+
+            if (formData.dmt_date instanceof Date) {
+
+                dmtDateObj = formData.dmt_date;
+
+            } else if (formData.dmt_date) {
+
+                const parsedDate = new Date(formData.dmt_date);
+
+                dmtDateObj = Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+
+            } else {
+
+                dmtDateObj = undefined;
+
+            }
+
+
+
+            let dStopTimeDateObj: Date | undefined;
+
+            if (formData.dStopTime_date instanceof Date) {
+
+                dStopTimeDateObj = formData.dStopTime_date;
+
+            } else if (formData.dStopTime_date) {
+
+                const parsedDate = new Date(formData.dStopTime_date);
+
+                dStopTimeDateObj = Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+
+            } else {
+
+                dStopTimeDateObj = undefined;
+
+            }
+
+
+
+            const response: ApiResponse<{ deviceName: string; deviceNo: string; }> = await axios.post('/api/device', dataToSend);
+
+
+
+            console.log('完整的 Axios 响应对象:', response); // AxiosResponse 实例
+
+            console.log('后端返回的实际数据 (response.data):', response.data); // 后端返回的 JSON 对象 { code, message, data }
+
+
+
+            // 访问后端返回的 code 和 message 都在 response.data 里面
+
+            if (response.data && response.code === 20000) {
+
+                Message.success(response.message || '设备信息提交成功！');
+
+                resetForm();
+
+            } else {
+
+                // 如果后端返回的 code 不是 20000，显示错误信息
+
+                Message.error(response.message || '设备信息提交失败！');
+
+            }
+
+        } catch (error) {
+
+            console.error('提交设备信息失败:', error);
+
+            if (axios.isAxiosError(error) && error.response) {
+
+                Message.error(`提交失败: ${error.response.data.message || error.response.statusText}`);
+
+            } else {
+
+                Message.error('网络或服务器错误，请稍后再试。');
+
+            }
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    } else {
+
+        Message.warning('请检查并填写所有必填项！');
+
+    }
+
+};
+
+
+
+const resetForm = () => {
+
+    // 重置所有表单字段
+
+    Object.assign(formData, {
+
+        deviceNo: '',
+
+        deviceName: '',
+
+        deviceUsage: '',
+
+        dStartTime_disabled: false,
+
+        dStartTime_date: undefined, // 重置为 undefined
+
+        dStartTime_time: '',
+
+        dmt_disabled: false,
+
+        dmt_date: undefined,
+
+        dmt_time: '',
+
+        dStopTime_disabled: false,
+
+        dStopTime_date: undefined,
+
+        dStopTime_time: '',
+
+    });
+
+    formRef.value?.resetFields();
+
+};
+
+</script>
+
+
+
+<script lang="ts">
+
+export default {
+
+    name: 'DeviceForm',
+
+};
+
+</script>
+
+
+
+<style scoped lang="less">
+
+.container {
+
+    padding: 0 20px 40px 20px;
+
+    overflow: hidden;
+
+}
+
+
+
+.date-time-checkbox {
+
+    margin-bottom: 8px;
+
+    margin-right: 16px;
+
+    vertical-align: middle;
+
+}
+
+
+
+.disabled-row {
+
+    opacity: 0.6;
+
+    pointer-events: none;
+
+}
+
+
+
+.actions {
+
+    position: fixed;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    height: 60px;
+
+    padding: 14px 20px 14px 0;
+
+    background: var(--color-bg-2);
+
+    text-align: right;
+
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+
+    z-index: 100;
+
+}
+
+</style>
+
+
+
+
+
+from flask import Blueprint, request, current_app
+
+from mysql.connector import Error
+
+
+
+from utils.db import get_db_connection, execute_query, close_db_connection
+
+from utils.response import success_response_wrap, fail_response_wrap
+
+from utils.auth import token_required
+
+from utils.helpers import parse_combined_datetime_str
+
+
+
+device_bp = Blueprint('device', __name__)
+
+
+
+
+
+@device_bp.route('/device', methods=['POST'])
+
+@token_required # 假设这个接口也需要认证
+
+def add_device():
+
+    print("data received")
+
+    if not request.is_json:
+
+        return fail_response_wrap(None, '请求必须是 JSON 格式', 40000)
+
+
+
+    data = request.get_json()
+
+    # 验证必填字段
+
+    required_fields = ['deviceNo', 'deviceName']
+
+    for field in required_fields:
+
+        if field not in data or not data[field]:
+
+            return fail_response_wrap(None, f'缺少或空字段: "{field}"', 40001)
+
+
+
+    device_no = data.get('deviceNo')
+
+    device_name = data.get('deviceName')
+
+    device_usage = data.get('deviceUsage')
+
+    # 从 JWT 中获取操作者用户名
+
+    operator = request.user.get('username', 'unknown')
+
+
+
+    d_start_time = parse_combined_datetime_str(data.get('dStartTime'))
+
+    d_mt = parse_combined_datetime_str(data.get('dmt'))
+
+    d_stop_time = parse_combined_datetime_str(data.get('dStopTime'))
+
+
+
+    print("--------------------------------------------------")
+
+    print(f"User '{operator}' is adding device information.")
+
+    print(f"Received Device Data: {data}")
+
+    print(f"Parsed Dates: Start={d_start_time}, MT={d_mt}, Stop={d_stop_time}")
+
+    print("--------------------------------------------------")
+
+
+
+    conn = get_db_connection()
+
+    if not conn:
+
+        return fail_response_wrap(None, '数据库连接失败', 50000)
+
+
+
+    try:
+
+        insert_query = """
+
+        INSERT INTO devices (DeviceNo, DeviceName, DeviceUsage, DStartTime, DMT, DStopTime, Operator)
+
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+
+        """
+
+        if execute_query(conn, insert_query, (device_no, device_name, device_usage, d_start_time, d_mt, d_stop_time, operator), is_insert=True):
+
+            print("设备信息插入成功")
+
+            print(f"Inserted DeviceNo: {device_no}, DeviceName: {device_name}")
+
+            return success_response_wrap({
+
+                'deviceNo': device_no,
+
+                'deviceName': device_name
+
+            }, '设备信息添加成功！')
+
+        else:
+
+            return fail_response_wrap(None, '设备信息插入数据库失败', 50000)
+
+    except Error as db_error:
+
+        print(f"数据库操作错误: {db_error}")
+
+        if db_error.errno == 1062: # MySQL 错误码 1062 表示 Duplicate entry for key 'PRIMARY'
+
+            return fail_response_wrap(None, f'设备编号 "{device_no}" 已存在，请使用其他编号。', 40003)
+
+        return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
+
+    except Exception as e:
+
+        print(f"处理 /api/device 请求错误: {e}")
+
+        return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
+
+    finally:
+
+        close_db_connection(conn)
+
+
+
+
+
+import os
+
+from flask import Flask, jsonify
+
+from flask_cors import CORS
+
+
+
+from cfg import Config
+
+from utils.db import create_initial_tables_and_users
+
+from utils.response import fail_response_wrap
+
+from routes.auth import auth_bp
+
+from routes.NS import ns_bp
+
+from routes.Device import device_bp
+
+
+
+def create_app():
+
+    app = Flask(__name__)
+
+    app.config.from_object(Config) # 从 Config 类加载配置
+
+
+
+    # 初始化 CORS
+
+    CORS(app, resources={r"/api/*": {"origins": app.config['CORS_ORIGINS']}}) # 仅对 /api/* 路径启用 CORS
+
+
+
+    # 注册蓝图
+
+    # url_prefix 参数为蓝图中的所有路由添加前缀
+
+    app.register_blueprint(auth_bp, url_prefix='/api')
+
+    app.register_blueprint(ns_bp, url_prefix='/api')
+
+    app.register_blueprint(device_bp, url_prefix='/api')
+
+    # 错误处理器
+
+    @app.errorhandler(404)
+
+    def not_found_error(error):
+
+        return fail_response_wrap(None, 'API 地址不存在', 40400), 404
+
+
+
+    @app.errorhandler(500)
+
+    def internal_error(error):
+
+        import traceback
+
+        traceback.print_exc() # 打印详细错误信息到控制台，便于调试
+
+        return fail_response_wrap(None, '服务器内部错误', 50000), 500
+
+
+
+    return app
+
+
+
+if __name__ == '__main__':
+
+    app = create_app()
+
+    # 在开发模式下，可以自动创建表和初始用户
+
+    # 注意：生产环境不建议在应用启动时自动创建，应通过数据库迁移工具管理
+
+    with app.app_context(): # 确保在应用上下文中执行数据库操作
+
+        create_initial_tables_and_users()
+
+
+
+    app.run(debug=True, port=5000)

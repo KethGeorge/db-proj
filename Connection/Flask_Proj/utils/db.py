@@ -18,8 +18,8 @@ def get_db_connection():
         print(f"连接MySQL数据库失败: {e}")
         return None
 
-def execute_query(conn, query, params=None, fetch_one=False, is_insert=False):
-    """执行 SQL 查询并处理结果"""
+""" def execute_query(conn, query, params=None, fetch_one=False, is_insert=False):
+    执行 SQL 查询并处理结果
     cursor = conn.cursor()
     try:
         cursor.execute(query, params or ()) # 确保 params 是一个元组或列表
@@ -38,7 +38,36 @@ def execute_query(conn, query, params=None, fetch_one=False, is_insert=False):
         conn.rollback() # 出现错误时回滚事务
         raise # 抛出异常，让上层调用者处理
     finally:
+#   """       #cursor.close()
+
+def execute_query(conn, query, params=None, fetch_one=False, fetch_all=False, is_insert=False):
+    """执行 SQL 查询并处理结果"""
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query, params or ()) # 确保 params 是一个元组或列表
+
+        if is_insert:
+            conn.commit()
+            return cursor.lastrowid if cursor.lastrowid else True # 对于无自增ID的表，lastrowid可能是0
+        elif query.strip().upper().startswith("SELECT"):
+            # 根据 fetch_one 或 fetch_all 来决定获取一个还是所有结果
+            if fetch_one:
+                result = cursor.fetchone()
+            elif fetch_all: # 新增的逻辑
+                result = cursor.fetchall()
+            else: # 默认行为，如果两个都为False，可以考虑抛出错误或设定默认行为
+                result = None # 或者你可以定义一个默认行为，比如 fetch_all = True
+            return result
+        else: # 对于 UPDATE, DELETE 等非 SELECT 操作
+            conn.commit()
+            return True
+    except Error as e:
+        print(f"执行查询失败: {query} -> {e}")
+        conn.rollback() # 出现错误时回滚事务
+        raise # 抛出异常，让上层调用者处理
+    finally:
         cursor.close()
+
 
 def close_db_connection(conn):
     """关闭数据库连接"""

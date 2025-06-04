@@ -31,7 +31,9 @@ import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 import localeProtocol from '@/views/Protocol/locale/zh-CN';
 import localeDevice from '@/views/Device/locale/zh-CN';
 
+import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
 import localeUserAdmin from '@/views/UserAdmin/locale/zh-CN';
+// Final line
 import localeSettings from './zh-CN/settings';
 
 export default {
@@ -78,4 +80,5 @@ export default {
     ...localeProtocol,
     ...localeDevice,
     ...localeUserAdmin,
+    ...localeUserQuery,
 };

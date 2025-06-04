@@ -16,7 +16,7 @@ const protocolRoute: RouteRecordRaw[] = [
     meta: {
       locale: 'menu.protocol', // 侧边栏菜单的国际化 key (对应 src/locale 目录下的文件)
       requiresAuth: true, // 是否需要登录权限
-      icon: 'icon-settings', // 侧边栏菜单图标，这里用了一个示例图标，请根据 Arco Design 图标库选择
+      icon: 'icon-book', // 侧边栏菜单图标，这里用了一个示例图标，请根据 Arco Design 图标库选择
       order: 5, // 在侧边栏菜单中的排序，请根据你的需求调整 (数字越小越靠前)
     },
     children: [

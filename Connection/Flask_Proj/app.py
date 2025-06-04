@@ -13,6 +13,7 @@ from routes.auth import auth_bp
 from routes.NS import ns_bp
 from routes.Device import device_bp
 from routes.UserAdmin import user_bp  # 导入我们为用户创建的蓝图
+from routes.UserQuery import user_bp as user_query_bp  # 如果需要查询用户的蓝图
 
 def create_app():
     app = Flask(__name__)
@@ -28,7 +29,8 @@ def create_app():
     app.register_blueprint(ns_bp, url_prefix='/api')
     app.register_blueprint(device_bp, url_prefix='/api')
     app.register_blueprint(user_bp, url_prefix='/api')  # 注册用户蓝图
-
+    app.register_blueprint(user_query_bp, url_prefix='/api')  # 注册用户查询蓝图
+    
     # 错误处理器
     @app.errorhandler(404)
     def not_found_error(error):

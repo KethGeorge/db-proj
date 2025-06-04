@@ -4,6 +4,8 @@ import { RouteRecordRaw } from 'vue-router';
 // 根据我们之前讨论的文件路径，它位于 views/user/index.vue
 // 确保这里的路径是正确的
 import UserAdminFormPage from '@/views/UserAdmin/index.vue';
+import UserAdminTable from '@/views/UserQuery/index.vue'; 
+
 
 const userAdminRoute: RouteRecordRaw[] = [
     {
@@ -32,16 +34,17 @@ const userAdminRoute: RouteRecordRaw[] = [
                 },
             },
             //   如果你未来还有用户列表页、用户详情页、用户编辑页等，可以在这里继续添加子路由
-            {
-                path: 'list', // 例如：/user-admin/list
-                name: 'UserAdminList',
-                component: () => import('@/views/exception/404/index.vue'), // 假设用户列表页面路径
+                        {
+                path: 'list', // 新增的子路径，完整路径会是 /user-admin/list
+                name: 'UserAdminList', // 用户列表页面的路由名称
+                component: UserAdminTable, // 指向你提供的用户列表组件
                 meta: {
-                    locale: 'menu.userAdmin.list',
+                    locale: 'menu.userAdmin.list', // 页面在侧边栏或面包屑中的国际化 key
                     requiresAuth: true,
-                    roles: ['admin'], // 示例：管理员和普通用户可以查看用户列表
+                    roles: ['admin', 'user'], // 示例：管理员和普通用户可以查看用户列表
                 },
             },
+            
             // {
             //    path: 'edit/:id', // 动态路由参数，例如 /user-admin/edit/123
             //    name: 'UserAdminEdit',

@@ -4,7 +4,7 @@ from flask import Blueprint, request, current_app
 from mysql.connector import Error
 
 # 导入您的工具函数，路径基于 Flask_Proj 根目录
-from utils.db import get_db_connection, execute_query, close_db_connection
+from utils.db import get_db_connection, execute_query
 from utils.response import success_response_wrap, fail_response_wrap
 from utils.auth import token_required
 
@@ -93,8 +93,6 @@ def update_user_info(userno):
     except Exception as e:
         current_app.logger.error(f"处理 /api/users/{userno} PUT 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
-    finally:
-        close_db_connection(conn)
 
 
 
@@ -146,5 +144,3 @@ def update_user_password(userno):
     except Exception as e:
         current_app.logger.error(f"处理 /api/users/{userno}/password PUT 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
-    finally:
-        close_db_connection(conn)

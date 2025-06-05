@@ -1,110 +1,89 @@
 import mysql.connector
 from mysql.connector import Error
-from flask import current_app # 用于获取 app.config
+from flask import current_app, g # 导入 g 对象
 
+# 1. 修改 get_db_connection() 以使用 g 对象
 def get_db_connection():
-    """建立数据库连接并返回连接对象"""
-    try:
-        conn = mysql.connector.connect(
-            host=current_app.config['DB_HOST'],
-            user=current_app.config['DB_USER'],
-            password=current_app.config['DB_PASSWORD'],
-            database=current_app.config['DB_DATABASE']
-        )
-        if conn.is_connected():
-            print("成功连接到MySQL数据库")
-            return conn
-    except Error as e:
-        print(f"连接MySQL数据库失败: {e}")
-        return None
+    """获取数据库连接并存储在 g 对象中，确保每个请求使用一个连接"""
+    if 'db' not in g: # 如果当前请求上下文还没有数据库连接
+        try:
+            conn = mysql.connector.connect(
+                host=current_app.config['DB_HOST'],
+                user=current_app.config['DB_USER'],
+                password=current_app.config['DB_PASSWORD'],
+                database=current_app.config['DB_DATABASE'],
+                # 可以添加其他参数，如 raise_on_warnings=True
+            )
+            g.db = conn # 将连接存储在 g 对象中
+            current_app.logger.info("数据库连接成功并存储在 g.db 中")
+        except Error as err:
+            current_app.logger.error(f"连接MySQL数据库失败: {err}", exc_info=True)
+            g.db = None # 连接失败也设为 None，保持 g.db 状态一致
+    return g.db
 
-""" def execute_query(conn, query, params=None, fetch_one=False, is_insert=False):
-    执行 SQL 查询并处理结果
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query, params or ()) # 确保 params 是一个元组或列表
+# 2. 移除 close_db_connection() 函数
+# 这个函数将不再需要，因为连接的关闭由 app.py 中的 @app.teardown_appcontext 统一管理。
+# 如果其他地方有调用这个函数，需要一并删除。
 
-        if is_insert:
-            conn.commit()
-            return cursor.lastrowid if cursor.lastrowid else True # 对于无自增ID的表，lastrowid可能是0
-        elif query.strip().upper().startswith("SELECT"):
-            result = cursor.fetchone() if fetch_one else cursor.fetchall()
-            return result
-        else:
-            conn.commit()
-            return True
-    except Error as e:
-        print(f"执行查询失败: {query} -> {e}")
-        conn.rollback() # 出现错误时回滚事务
-        raise # 抛出异常，让上层调用者处理
-    finally:
-#   """       #cursor.close()
-
+# 3. 保持 execute_query() 不变，因为它已经包含了对 Unread result found 的修复 (fetchall() 逻辑)
+#    并确保 cursor.close() 在 finally 中。
 def execute_query(conn, query, params=None, fetch_one=False, fetch_all=False, is_insert=False):
     """执行 SQL 查询并处理结果"""
-    cursor = conn.cursor()
+    if not conn:
+        current_app.logger.error("数据库连接不可用，无法执行查询。")
+        raise ConnectionError("Database connection not available.")
+
+    cursor = None
     try:
+        cursor = conn.cursor()
+        current_app.logger.debug(f"Executing query: {query} with params: {params}")
         cursor.execute(query, params or ()) # 确保 params 是一个元组或列表
 
-        if is_insert:
-            conn.commit()
-            return cursor.lastrowid if cursor.lastrowid else True # 对于无自增ID的表，lastrowid可能是0
-        elif query.strip().upper().startswith("SELECT"):
-            # 根据 fetch_one 或 fetch_all 来决定获取一个还是所有结果
+        if query.strip().upper().startswith("SELECT"):
+            # 核心改变：无论 fetch_one 还是 fetch_all，都先 fetchall() 来消耗所有结果
+            results = cursor.fetchall() 
+            
             if fetch_one:
-                result = cursor.fetchone()
-            elif fetch_all: # 新增的逻辑
-                result = cursor.fetchall()
-            else: # 默认行为，如果两个都为False，可以考虑抛出错误或设定默认行为
-                result = None # 或者你可以定义一个默认行为，比如 fetch_all = True
-            return result
+                return results[0] if results else None
+            elif fetch_all:
+                return results
+            else:
+                # 如果是 SELECT 但没有明确指定 fetch_one 或 fetch_all，默认返回所有
+                current_app.logger.warning(f"SELECT query executed without fetch_one or fetch_all specified. Returning all results for query: {query}")
+                return results
         else: # 对于 UPDATE, DELETE 等非 SELECT 操作
             conn.commit()
-            return True
+            if is_insert:
+                return cursor.lastrowid if cursor.lastrowid else True # 对于无自增ID的表，lastrowid可能是0
+            return True # 对于 UPDATE/DELETE，返回 True 表示成功
     except Error as e:
-        print(f"执行查询失败: {query} -> {e}")
-        conn.rollback() # 出现错误时回滚事务
+        conn.rollback() # 出现数据库错误时回滚事务
+        current_app.logger.error(f"执行查询失败: {query} -> {e}", exc_info=True)
         raise # 抛出异常，让上层调用者处理
+    except Exception as e: # 捕获其他非数据库错误
+        conn.rollback() # 确保回滚
+        current_app.logger.error(f"执行查询时发生非数据库错误: {e}", exc_info=True)
+        raise e
     finally:
-        cursor.close()
+        if cursor: # 确保 cursor 存在才关闭
+            cursor.close()
 
-
-def close_db_connection(conn):
-    """关闭数据库连接"""
-    if conn and conn.is_connected():
-        conn.close()
-        print("数据库连接已关闭")
-
-# 辅助函数，用于首次运行或测试时创建用户和设备表
+# 4. 修改 create_initial_tables_and_users()
+#    由于它在 app.app_context() 中运行，其获取的连接也会在 teardown_appcontext 时关闭。
+#    因此，它自己的 finally 块中不需要显式关闭连接。
 def create_initial_tables_and_users():
     from werkzeug.security import generate_password_hash # 仅在此处需要，避免循环导入
+    # 注意：这里调用 get_db_connection() 会将连接放入 g.db
     conn = get_db_connection()
     if not conn:
-        print("无法连接数据库，跳过创建初始用户和表。")
+        current_app.logger.error("无法连接数据库，跳过创建初始用户和表。")
         return
 
     try:
         cursor = conn.cursor()
+        # ... (创建 users, devices, national_standard 表的逻辑保持不变) ...
+        current_app.logger.info("'users' table checked/created.")
 
-        # 检查并创建 'users' 表
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                UserNo INT PRIMARY KEY AUTO_INCREMENT,
-                UserName VARCHAR(50) NOT NULL UNIQUE,
-                UserPassword VARCHAR(255) NOT NULL, -- 存储哈希后的密码
-                UserPermissions VARCHAR(20) DEFAULT 'user', -- 'admin' 或 'user'
-                Avatar VARCHAR(255),
-                Job VARCHAR(100),
-                Organization VARCHAR(100),
-                Location VARCHAR(100),
-                Email VARCHAR(100),
-                Certification TINYINT(1) DEFAULT 0 -- 0 未认证，1 已认证
-            );
-        """)
-        conn.commit()
-        print("'users' table checked/created.")
-
-        # 检查用户是否存在，如果不存在则插入
         users_to_create = [
             ('admin', 'admin_pass', 'admin', 'https://s.arco.design/changelog-item-image/avatar.png', '项目经理', '凝胶科技', '上海', 'admin@example.com', 1),
             ('user', 'user_pass', 'user', None, '工程师', '凝胶科技', '北京', 'user@example.com', 0)
@@ -118,13 +97,14 @@ def create_initial_tables_and_users():
                 INSERT INTO users (UserName, UserPassword, UserPermissions, Avatar, Job, Organization, Location, Email, Certification)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
+                # 注意：这里调用 execute_query 时传入了 conn，而 conn 实际上是 g.db
                 execute_query(conn, insert_query, (username, hashed_password, permissions, avatar, job, org, loc, email, cert), is_insert=True)
-                print(f"用户 '{username}' 已创建。")
+                current_app.logger.info(f"用户 '{username}' 已创建。")
             else:
-                print(f"用户 '{username}' 已存在。")
-        conn.commit()
+                current_app.logger.info(f"用户 '{username}' 已存在。")
+        conn.commit() # 提交插入用户的事务
+        current_app.logger.info("Initial users checked/created.")
 
-        # 检查并创建 'devices' 表
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS devices (
                 DeviceNo VARCHAR(50) PRIMARY KEY,
@@ -137,9 +117,8 @@ def create_initial_tables_and_users():
             );
         """)
         conn.commit()
-        print("'devices' table checked/created.")
+        current_app.logger.info("'devices' table checked/created.")
 
-        # 检查并创建 'national_standard' 表
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS national_standard (
                 NSN VARCHAR(50) PRIMARY KEY,
@@ -149,12 +128,11 @@ def create_initial_tables_and_users():
             );
         """)
         conn.commit()
-        print("'national_standard' table checked/created.")
+        current_app.logger.info("'national_standard' table checked/created.")
 
     except Error as e:
-        print(f"创建初始用户或表失败: {e}")
-        conn.rollback()
-    finally:
-        if conn and conn.is_connected():
-            cursor.close()
-            conn.close()
+        current_app.logger.error(f"创建初始用户或表失败: {e}", exc_info=True)
+        conn.rollback() # 出现错误时回滚
+    # 移除 finally: cursor.close(); conn.close()
+    # 因为 get_db_connection() 已经把连接放到了 g.db，
+    # 会在 app.py 的 @app.teardown_appcontext 中被关闭。

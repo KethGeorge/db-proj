@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import check_password_hash # 用于密码哈希
 import jwt
 
-from utils.db import get_db_connection, execute_query, close_db_connection
+from utils.db import get_db_connection, execute_query
 from utils.response import success_response_wrap, fail_response_wrap
 from utils.auth import token_required # 导入认证装饰器
 
@@ -62,8 +62,6 @@ def login():
     except Exception as e:
         print(f"登录处理错误: {e}")
         return fail_response_wrap(None, '服务器内部错误', 50000)
-    finally:
-        close_db_connection(conn)
 
 
 @auth_bp.route('/user/info', methods=['POST'])
@@ -101,8 +99,6 @@ def get_user_simple_info():
     except Exception as e:
         print(f"获取用户信息错误: {e}")
         return fail_response_wrap(None, '服务器内部错误', 50000)
-    finally:
-        close_db_connection(conn)
 
 @auth_bp.route('/user/logout', methods=['POST'])
 @token_required

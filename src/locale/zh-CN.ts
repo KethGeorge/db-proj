@@ -12,7 +12,6 @@ import localeStepForm from '@/views/form/step/locale/zh-CN';
 import localeGroupForm from '@/views/form/group/locale/zh-CN';
 import localeNationalStandard from '@/views/NationalStandard/locale/zh-CN';
 
-import localeMaterial from '@/views/Materials/locale/zh-CN';
 import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
 
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
@@ -31,6 +30,8 @@ import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 import localeProtocol from '@/views/Protocol/locale/zh-CN';
 import localeDevice from '@/views/Device/locale/zh-CN';
 
+
+import localeMaterialAdmin from '@/views/material/locale/zh-CN';
 import localeNS2 from '@/views/NS2/locale/zh-CN';
 import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
 import localeUserAdmin from '@/views/UserAdmin/locale/zh-CN';
@@ -72,7 +73,6 @@ export default {
     ...localeBasicProfile,
     ...localeDataAnalysis,
     ...localeMultiDAnalysis,
-    ...localeMaterial,
     ...localeSuccess,
     ...localeError,
     ...locale403,
@@ -85,4 +85,5 @@ export default {
     ...localeUserAdmin,
     ...localeUserQuery,
     ...localeNS2,
+    ...localeMaterialAdmin,
 };

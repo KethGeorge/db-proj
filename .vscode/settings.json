@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "pylance",
+        "flask",
+        "C:\\Users\\18419\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\flask",
+        "C:\\Users\\18419\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\mysql\\connector"
+    ]
+}

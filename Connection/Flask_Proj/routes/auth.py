@@ -39,7 +39,7 @@ def login():
         # ... 登录成功逻辑
                 # 创建 JWT Payload
                 payload = {
-                    'user_id': user_no,
+                    'UserNo': user_no,
                     'username': db_username,
                     'permissions': user_permissions,
                     'exp': datetime.datetime.now(datetime.timezone.utc) + current_app.config['JWT_ACCESS_TOKEN_EXPIRES']
@@ -72,7 +72,7 @@ def get_user_simple_info():
         return fail_response_wrap(None, '数据库连接失败', 50000)
 
     try:
-        user_id = request.user.get('user_id')
+        user_id = request.user.get('UserNo')
         username_from_token = request.user.get('username')
         permissions_from_token = request.user.get('permissions')
 

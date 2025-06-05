@@ -55,6 +55,8 @@ export default {
     'menu.userAdmin.create': '创建新用户',
     'menu.userAdmin': '管理用户',
     'menu.userAdmin.list': '用户列表',
+    'menu.userAdmin.edit': '编辑用户',
+    'menu.userAdmin.view': '查看用户信息',
     ...localeSettings,
     ...localeMessageBox,
     ...localeLogin,

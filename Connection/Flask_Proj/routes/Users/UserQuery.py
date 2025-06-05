@@ -71,7 +71,7 @@ def get_users():
 
         # 获取总条数
         total_count = execute_query(conn, count_query, tuple(query_params), fetch_one=True)[0]
-
+        current_app.logger.info(f"Total users found: {total_count}")
         # 添加分页
         offset = (current - 1) * page_size
         query += f" LIMIT %s OFFSET %s"
@@ -110,6 +110,44 @@ def get_users():
         return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
     except Exception as e:
         current_app.logger.error(f"处理 /api/users 请求错误: {e}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
+    finally:
+        close_db_connection(conn)
+
+@user_bp.route('/users/<string:userno>', methods=['GET']) # 定义动态路由参数
+@token_required
+def get_user_detail(userno):
+    current_app.logger.info(f"Received request for user detail: {userno}")
+
+    conn = get_db_connection()
+    if not conn:
+        return fail_response_wrap(None, '数据库连接失败', 50000)
+
+    try:
+        # 这里不查询密码字段
+        query = "SELECT UserNo, UserName, UserPermissions, Email, Telephone FROM users WHERE UserNo = %s"
+        user_raw = execute_query(conn, query, (userno,), fetch_one=True)
+
+        if not user_raw:
+            return fail_response_wrap(None, '用户不存在', 40400)
+
+        user_detail = {
+            'id': user_raw[0],
+            'number': user_raw[0],
+            'username': user_raw[1],
+            'userPermissions': user_raw[2],
+            'email': user_raw[3],
+            'telephone': user_raw[4],
+            'password': '' # 密码字段留空，不返回实际密码，因为在编辑页面是空的
+        }
+
+        return success_response_wrap(user_detail, '用户详情获取成功')
+
+    except Error as db_error:
+        current_app.logger.error(f"数据库操作错误 (get_user_detail): {db_error}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
+    except Exception as e:
+        current_app.logger.error(f"处理 /api/users/<userno> 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
     finally:
         close_db_connection(conn)

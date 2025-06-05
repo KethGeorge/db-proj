@@ -43,6 +43,6 @@ export default {
   'userAdmin.columns.telephone': '联系电话',
   'userAdmin.columns.operations': '操作',
   'userAdmin.columns.operations.view': '查看',
-
+  'userAdmin.columns.operations.edit': '修改',
   // ... 其他你可能需要添加的本地化键值对
 };

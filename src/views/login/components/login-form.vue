@@ -99,6 +99,9 @@
       try {
         await userStore.login(values as LoginData);
         const { redirect, ...othersQuery } = router.currentRoute.value.query;
+        console.log(values);
+        console.log('redirect', redirect);
+        console.log('othersQuery', othersQuery);
         router.push({
           name: (redirect as string) || 'Workplace',
           query: {
@@ -113,6 +116,7 @@
         loginConfig.value.username = rememberPassword ? username : '';
         loginConfig.value.password = rememberPassword ? password : '';
       } catch (err) {
+        console.error('Login error:', err);
         errorMessage.value = (err as Error).message;
       } finally {
         setLoading(false);

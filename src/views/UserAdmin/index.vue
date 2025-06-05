@@ -141,6 +141,19 @@ interface HttpResponse<T = any> { // 模拟后端统一返回结构，用于拦�
   message: string;
   data: T;
 }
+const resetForm = () => {
+  Object.assign(formData, {
+    username: '',
+    password: '',
+    email: '',
+    telephone: '',
+    userPermissions: 'user',
+    registrationDate_disabled: false,
+    registrationDate_date: undefined,
+    registrationDate_time: '',
+  });
+  formRef.value?.resetFields();
+};
 
 
 const onSubmitClick = async () => {
@@ -192,19 +205,6 @@ const onSubmitClick = async () => {
   }
 };
 
-const resetForm = () => {
-  Object.assign(formData, {
-    username: '',
-    password: '',
-    email: '',
-    telephone: '',
-    userPermissions: 'user',
-    registrationDate_disabled: false,
-    registrationDate_date: undefined,
-    registrationDate_time: '',
-  });
-  formRef.value?.resetFields();
-};
 </script>
 
 <script lang="ts">

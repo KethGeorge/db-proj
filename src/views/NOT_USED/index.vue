@@ -105,7 +105,7 @@ import { ref, reactive } from 'vue';
 import { FormInstance } from '@arco-design/web-vue/es/form';
 import { Message } from '@arco-design/web-vue';
 import useLoading from '@/hooks/loading';
-import axios, { AxiosResponse }  from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useUserStore } from '@/store';
 
 const user = useUserStore();

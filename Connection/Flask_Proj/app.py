@@ -20,6 +20,8 @@ from routes.NationalStandard.NationalStandardAPI import national_standard_bp  # 
 
 from routes.Material.materialAPI import material_bp  # 材料相关的蓝图
 
+from routes.device.deviceAPI import device_bp  # 设备相关的蓝图
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config) # 从 Config 类加载配置
@@ -38,6 +40,7 @@ def create_app():
     app.register_blueprint(user_modify_bp, url_prefix='/api')  # 注册用户修改蓝图
     app.register_blueprint(national_standard_bp, url_prefix='/api')  # 注册国家标准相关蓝图
     app.register_blueprint(material_bp, url_prefix='/api')  # 注册材料相关蓝图
+    app.register_blueprint(device_bp, url_prefix='/api')  # 注册设备相关蓝图
     # 错误处理器
     app.logger.info("应用上下文已创建，数据库表和初始用户已设置。")
     @app.errorhandler(404)

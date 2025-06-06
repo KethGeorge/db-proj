@@ -3,7 +3,7 @@ import datetime
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'your_super_secret_jwt_key_here_for_prod') # 生产环境请务必通过环境变量设置
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=100)
 
     # 数据库配置
     DB_HOST = "localhost"

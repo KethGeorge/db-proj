@@ -209,7 +209,19 @@ def create_initial_tables_and_users():
         """)
         conn.commit()
         current_app.logger.info("'Modification' table checked/created.")
-
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS device ( -- 表名改为 device
+                DeviceNo CHAR(20) PRIMARY KEY NOT NULL,    -- 你的图示是 char(20)
+                DeviceName CHAR(8) NOT NULL,              -- 你的图示是 char(8)
+                DeviceUsage VARCHAR(10),                  -- 你的图示是 Varchar(10)
+                DStartTime DATETIME,
+                DMT DATETIME,
+                DStopTime DATETIME,
+                Operator VARCHAR(100)
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'device' table checked/created.")
 
     except Error as e:
         current_app.logger.error(f"创建初始用户或表失败: {e}", exc_info=True)

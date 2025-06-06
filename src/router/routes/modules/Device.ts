@@ -1,46 +1,78 @@
 import { RouteRecordRaw } from 'vue-router';
 
-// 导入你的设备表单组件
-// 确保路径正确，@ 通常指向 src 目录
-import DeviceForm from '@/views/Device/index.vue'; // 这是我们之前编写的设备表单组件
+// ... (其他导入) ...
 
-const deviceRoutes: RouteRecordRaw[] = [
+// 导入新的设备管理组件 (注意导入路径中文件名已改为 device)
+import DeviceList from '@/views/Device/deviceList.vue';
+import DeviceForm from '@/views/Device/deviceForm.vue';
+
+const deviceRoute: RouteRecordRaw[] = [
     {
-        path: '/device', // 设备管理页面的父级路径
-        name: 'deviceParent', // 父级路由名称
-        component: () => import('@/layout/default-layout.vue'), // 引用布局组件
+        path: '/device-admin',
+        name: 'DeviceAdmin',
+        component: () => import('@/layout/default-layout.vue'),
         meta: {
-            locale: 'menu.device', // 侧边栏菜单的国际化 key
-            requiresAuth: true, // 需要登录权限
-            icon: 'icon-desktop', // 设备管理图标，您可以根据 Arco Design 图标库选择合适的图标
-            order: 3, // 在侧边栏菜单中的排序 (数字越小越靠前)
+            locale: 'menu.deviceAdmin',
+            requiresAuth: true,
+            icon: 'icon-desktop',
+            order: 6,
+            roles: ['admin', 'user'],
         },
         children: [
             {
-                path: 'add', // 子路径，完整路径会是 /device/add
-                name: 'deviceAdd', // 页面路由名称
-                component: DeviceForm, // 设备表单组件
+                path: 'list',
+                name: 'DeviceAdminList',
+                component: DeviceList,
                 meta: {
-                    locale: 'menu.device.form', // 页面在侧边栏或面包屑中的国际化 key
+                    locale: 'menu.deviceAdmin.list',
                     requiresAuth: true,
-                    roles: ['admin', 'user'], // 可选：指定哪些角色可以访问
+                    roles: ['admin', 'user'],
+                    hideInMenu: false,
                 },
             },
-            // 如果您有设备列表、设备详情等其他与设备相关的页面，
-            // 可以在这里作为 '/device' 的子路由继续添加。
-            // 例如：
-            // {
-            //   path: 'list',
-            //   name: 'deviceList',
-            //   component: () => import('@/views/DeviceList.vue'),
-            //   meta: {
-            //     locale: 'menu.device.list',
-            //     requiresAuth: true,
-            //     roles: ['admin', 'user'],
-            //   },
-            // },
-        ],
+            {
+                path: 'create',
+                name: 'DeviceAdminCreate',
+                component: DeviceForm,
+                meta: {
+                    locale: 'menu.deviceAdmin.create',
+                    requiresAuth: true,
+                    roles: ['admin'],
+                    hideInMenu: true,
+                },
+            },
+            {
+                path: 'edit/:deviceNo',
+                name: 'DeviceAdminEdit',
+                component: DeviceForm,
+                meta: {
+                    locale: 'menu.deviceAdmin.edit',
+                    requiresAuth: true,
+                    roles: ['admin'],
+                    hideInMenu: true,
+                },
+            },
+            {
+                path: 'view/:deviceNo',
+                name: 'DeviceAdminView',
+                component: DeviceForm,
+                meta: {
+                    locale: 'menu.deviceAdmin.view',
+                    requiresAuth: true,
+                    roles: ['admin', 'user'],
+                    hideInMenu: true,
+                },
+            },
+        ]
     },
 ];
 
-export default deviceRoutes;
+export default deviceRoute;
+// 确保在你的主路由数组中导出 deviceRoute
+// 例如：
+// export default [
+//   ...,
+//   ...nationalStandardRoute,
+//   ...materialRoute,
+//   ...deviceRoute, // 添加新路由
+// ];

@@ -222,7 +222,23 @@ def create_initial_tables_and_users():
         """)
         conn.commit()
         current_app.logger.info("'device' table checked/created.")
-
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS protocol (
+                ProtocolNo CHAR(8) PRIMARY KEY NOT NULL,
+                NSN CHAR(20),                     -- 允许为NULL，如果需要外键，请添加 FOREIGN KEY (NSN) REFERENCES national_standard(NSN)
+                SHT FLOAT,                        -- 标准加热温度
+                SMS FLOAT,                        -- 标准搅拌速度
+                MixingAngle FLOAT,                -- 搅拌角度
+                MixingRadius FLOAT,               -- 标准搅拌半径
+                MeasurementInterval FLOAT,        -- 标准测定时间
+                MaterialCode CHAR(16) NOT NULL,   -- 外码，不允许空
+                UserNo CHAR(8) NOT NULL,          -- 外码，不允许空
+                FOREIGN KEY (MaterialCode) REFERENCES material(MaterialCode), -- 外键约束到 material 表
+                FOREIGN KEY (UserNo) REFERENCES users(UserNo)                -- 外键约束到 users 表
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'protocol' table checked/created.")
     except Error as e:
         current_app.logger.error(f"创建初始用户或表失败: {e}", exc_info=True)
         conn.rollback() # 出现错误时回滚

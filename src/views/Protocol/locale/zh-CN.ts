@@ -1,46 +1,92 @@
+// frontend/src/locale/zh-CN.ts (只添加 Protocol 相关的部分)
 export default {
-    'menu.protocol': '实验策略管理', // 对应父级菜单，如：协议管理
-    'menu.protocol.create': '实验策略创建', // 对应子菜单，如：协议创建
-    // 'menu.protocol.list': '协议列表', // 如果你未来有列表页，可以加上
+  // ... (其他现有翻译) ...
 
-    // 模块整体名称
-    'Protocol': '实验策略',
-    'Protocol.form': '实验策略创建', // 用于面包屑或页面小标题
+  'menu.protocolAdmin': '策略管理',
+  'menu.protocolAdmin.list': '策略列表',
+  'menu.protocolAdmin.create': '新建策略',
+  'menu.protocolAdmin.edit': '编辑策略',
+  'menu.protocolAdmin.view': '策略详情',
+  'protocol': '策略',
+  'protocol.list': '策略列表',
 
-    // 表单页面标题
-    'Protocol.form.title': '创建新策略',
-    'Protocol.form.label.protocolNo': '策略编号',
-    'Protocol.form.placeholder.protocolNo': '请输入策略编码',
+  'protocol.form.label.ProtocolNo': '策略编码',
+  'protocol.form.placeholder.ProtocolNo': '请输入策略编码（8字符以内）',
+  'protocol.form.label.NSN': '国家标准编号',
+  'protocol.form.placeholder.NSN': '请输入国家标准编号（20字符以内）',
+  'protocol.form.label.SHT': '标准加热温度',
+  'protocol.form.placeholder.SHT': '请输入标准加热温度',
+  'protocol.form.label.SMS': '标准搅拌速度',
+  'protocol.form.placeholder.SMS': '请输入标准搅拌速度',
+  'protocol.form.label.MixingAngle': '搅拌角度',
+  'protocol.form.placeholder.MixingAngle': '请输入搅拌角度',
+  'protocol.form.label.MixingRadius': '标准搅拌半径',
+  'protocol.form.placeholder.MixingRadius': '请输入标准搅拌半径',
+  'protocol.form.label.MeasurementInterval': '标准测定时间',
+  'protocol.form.placeholder.MeasurementInterval': '请输入标准测定时间',
+  'protocol.form.label.MaterialCode': '材料编码',
+  'protocol.form.placeholder.MaterialCode': '请输入材料编码',
+  'protocol.form.label.UserNo': '账户编号',
+  'protocol.form.placeholder.UserNo': '请输入账户编号',
 
-    'Protocol.form.label.nsn': '国家标准编号',
-    'Protocol.form.placeholder.nsn': '请输入国家标准编号',
+  'protocol.form.search': '查询',
+  'protocol.form.reset': '重置',
+  'protocol.operation.create': '新建',
+  'protocol.actions.refresh': '刷新',
+  'protocol.actions.density': '密度',
+  'protocol.actions.columnSetting': '列设置',
+  'protocol.columns.index': '#',
+  'protocol.columns.ProtocolNo': '策略编码',
+  'protocol.columns.NSN': '国家标准编号',
+  'protocol.columns.SHT': '标准加热温度',
+  'protocol.columns.SMS': '标准搅拌速度',
+  'protocol.columns.MixingAngle': '搅拌角度',
+  'protocol.columns.MixingRadius': '标准搅拌半径',
+  'protocol.columns.MeasurementInterval': '标准测定时间',
+  'protocol.columns.MaterialCode': '材料编码',
+  'protocol.columns.UserNo': '账户编号',
+  'protocol.columns.operations': '操作',
+  'protocol.columns.operations.view': '查看',
+  'protocol.columns.operations.edit': '编辑',
+  'protocol.columns.operations.delete': '删除',
+  'protocol.size.mini': '迷你',
+  'protocol.size.small': '偏小',
+  'protocol.size.medium': '中等',
+  'protocol.size.large': '偏大',
+  'protocol.form.title.create': '新建策略',
+  'protocol.form.title.edit': '编辑策略',
+  'protocol.form.title.view': '查看策略',
+  'protocol.form.title.default': '策略信息',
 
-    'Protocol.form.label.heatingEquipment': '使用加热设备',
-    'Protocol.form.placeholder.heatingEquipment': '请输入使用加热设备',
+  'protocol.form.validation.ProtocolNoRequired': '策略编码不能为空',
+  'protocol.form.validation.ProtocolNoLength': '策略编码长度不能超过8个字符',
+  'protocol.form.validation.NSNLength': '国家标准编号长度不能超过20个字符',
+  'protocol.form.validation.SHTNumber': '标准加热温度必须是数字',
+  'protocol.form.validation.SMSNumber': '标准搅拌速度必须是数字',
+  'protocol.form.validation.MixingAngleNumber': '搅拌角度必须是数字',
+  'protocol.form.validation.MixingRadiusNumber': '标准搅拌半径必须是数字',
+  'protocol.form.validation.MeasurementIntervalNumber': '标准测定时间必须是数字',
+  'protocol.form.validation.MaterialCodeRequired': '材料编码不能为空',
+  'protocol.form.validation.MaterialCodeLength': '材料编码长度不能超过16个字符',
+  'protocol.form.validation.UserNoRequired': '账户编号不能为空',
+  'protocol.form.validation.UserNoLength': '账户编号长度不能超过8个字符',
 
-    'Protocol.form.label.mixingEquipment': '使用搅拌设备',
-    'Protocol.form.placeholder.mixingEquipment': '请输入使用搅拌设备',
+  'protocol.message.idMissingForView': '缺少策略编码，无法查看。',
+  'protocol.message.idMissingForEdit': '缺少策略编码，无法编辑。',
+  'protocol.message.idMissingForDelete': '缺少策略编码，无法删除。',
+  'protocol.message.idMissingForUpdate': '缺少策略编码，无法更新。',
+  'protocol.message.createSuccess': '策略创建成功！',
+  'protocol.message.updateSuccess': '策略更新成功！',
+  'protocol.message.deleteSuccess': '策略删除成功！',
+  'protocol.message.deleteFail': '策略删除失败',
+  'protocol.message.confirmDelete': '确定要删除此策略吗？',
+  'protocol.message.fetchFail': '获取策略信息失败',
 
-    'Protocol.form.label.measuringEquipment': '凝胶时间测定设备',
-    'Protocol.form.placeholder.measuringEquipment': '请输入凝胶时间测定设备',
-
-    'Protocol.form.label.sht': '标准加热温度',
-    'Protocol.form.placeholder.sht': '请输入标准加热温度',
-
-    'Protocol.form.label.sms': '标准搅拌速度',
-    'Protocol.form.placeholder.sms': '请输入标准搅拌速度',
-
-    'Protocol.form.label.mixingAngle': '搅拌角度',
-    'Protocol.form.placeholder.mixingAngle': '请输入搅拌角度',
-
-    'Protocol.form.label.mixingRadius': '标准搅拌半径',
-    'Protocol.form.placeholder.mixingRadius': '请输入标准搅拌半径',
-
-    'Protocol.form.label.measurementInterval': '标准测定时间',
-    'Protocol.form.placeholder.measurementInterval': '请输入标准测定时间',
-
-    'Protocol.form.label.materialCode': '材料编码',
-    'Protocol.form.placeholder.materialCode': '请输入材料编码',
+  // groupForm 相关的通用翻译
+  'groupForm.reset': '重置',
+  'groupForm.submit': '提交',
+  'groupForm.save': '保存',
+  'groupForm.back': '返回',
+  'groupForm.validationWarning': '请检查并填写所有必填项！',
+  'groupForm.operationFail': '操作失败',
 };
-
-

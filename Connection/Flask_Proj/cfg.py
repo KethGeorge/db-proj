@@ -10,6 +10,6 @@ class Config:
     DB_USER = "tumu1t"
     DB_PASSWORD = "tumumu1tt"
     DB_DATABASE = "凝胶时间测定"
-
+    YOUR_LAN_IP_ADDRESS = "192.168.0.14"
     # CORS 配置
-    CORS_ORIGINS = ["http://localhost:5173"] # 生产环境请限制为您的前端部署地址
+    CORS_ORIGINS = ["http://localhost:5173", f'http://{YOUR_LAN_IP_ADDRESS}:3000'] # 生产环境请限制为您的前端部署地址

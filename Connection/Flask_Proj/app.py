@@ -20,6 +20,7 @@ from routes.NationalStandard.NationalStandardAPI import national_standard_bp  # 
 from routes.Material.materialAPI import material_bp  # 材料相关的蓝图
 from routes.device.deviceAPI import device_bp  # 设备相关的蓝图
 from routes.protocol.protocolAPI import protocol_bp  # 协议相关的蓝图
+from routes.experiment.experimentAPI import experiment_bp  # 实验相关的蓝图
 
 def create_app():
     app = Flask(__name__)
@@ -42,6 +43,7 @@ def create_app():
     app.register_blueprint(material_bp, url_prefix='/api')  # 注册材料相关蓝图
     app.register_blueprint(device_bp, url_prefix='/api')  # 注册设备相关蓝图
     app.register_blueprint(protocol_bp, url_prefix='/api')  # 注册协议相关蓝图
+    app.register_blueprint(experiment_bp, url_prefix='/api')  # 注册实验相关蓝图
     # 错误处理器
     app.logger.info("应用上下文已创建，数据库表和初始用户已设置。")
     @app.errorhandler(404)
@@ -73,4 +75,4 @@ if __name__ == '__main__':
     # 运行 Flask 应用
     # debug=True 会在代码更改时自动重载，并提供更详细的错误信息
     # port=5000 是默认的 Flask 端口
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=5000)

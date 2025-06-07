@@ -239,6 +239,23 @@ def create_initial_tables_and_users():
         """)
         conn.commit()
         current_app.logger.info("'protocol' table checked/created.")
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS experiment (
+                ExperimentNo CHAR(16) PRIMARY KEY NOT NULL,
+                MaterialCode CHAR(16),
+                HeatError FLOAT(6),
+                MixError FLOAT(6),
+                StartTime TIME,
+                EndTime TIME,
+                ProtocolNo CHAR(8),
+                UserNo CHAR(8) NOT NULL,
+                FOREIGN KEY (MaterialCode) REFERENCES material(MaterialCode),
+                FOREIGN KEY (ProtocolNo) REFERENCES protocol(ProtocolNo),
+                FOREIGN KEY (UserNo) REFERENCES users(UserNo)
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'experiment' table checked/created.")
     except Error as e:
         current_app.logger.error(f"创建初始用户或表失败: {e}", exc_info=True)
         conn.rollback() # 出现错误时回滚

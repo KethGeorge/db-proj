@@ -114,44 +114,36 @@ def create_initial_tables_and_users():
         # 检查并创建 'users' 表
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                UserNo INT PRIMARY KEY AUTO_INCREMENT,
-                UserName VARCHAR(50) NOT NULL UNIQUE,
-                UserPassword VARCHAR(255) NOT NULL, -- 存储哈希后的密码
-                UserPermissions VARCHAR(20) DEFAULT 'user', -- 'admin' 或 'user'
-                Avatar VARCHAR(255),
-                Job VARCHAR(100),
-                Organization VARCHAR(100),
-                Location VARCHAR(100),
-                Email VARCHAR(100),
-                Certification TINYINT(1) DEFAULT 0 -- 0 未认证，1 已认证
+                UserNo CHAR(8) PRIMARY KEY NOT NULL,
+                UserName CHAR(20) NOT NULL UNIQUE,
+                UserPassword CHAR(20) NOT NULL,
+                UserPermissions CHAR(5),
+                Email VARCHAR(20) UNIQUE,
+                Telephone CHAR(13)
             );
         """)
         conn.commit()
         current_app.logger.info("'users' table checked/created.")
 
         # 检查用户是否存在，如果不存在则插入
+        # 手动提供 UserNo，因为是 CHAR(8) 且非自增
         users_to_create = [
-            ('admin', 'admin_pass', 'admin', 'https://s.arco.design/changelog-item-image/avatar.png', '项目经理', '凝胶科技', '上海', 'admin@example.com', 1),
-            ('user', 'user_pass', 'user', None, '工程师', '凝胶科技', '北京', 'user@example.com', 0)
+            ('U001', 'admin', 'admin_pass', 'admin', 'admin@example.com', '1234567890123'),
+            ('U002', 'user', 'user_pass', 'user', 'user@example.com', '1112223334455')
         ]
 
-        for username, password, permissions, avatar, job, org, loc, email, cert in users_to_create:
-            # 检查 UserNo 是否已经存在，因为后面可能会自动生成，或者我们希望UserNo是固定的
-            # 对于演示，这里我们假设UserNo是自增的，因此只检查UserName是否存在
-            cursor.execute("SELECT UserNo FROM users WHERE UserName = %s", (username,))
+        for userno, username, password, permissions, email, telephone in users_to_create:
+            cursor.execute("SELECT UserNo FROM users WHERE UserNo = %s", (userno,))
             if not cursor.fetchone():
-                hashed_password = generate_password_hash(password) # 使用 werkzeug.security 哈希密码
                 insert_query = """
-                INSERT INTO users (UserName, UserPassword, UserPermissions, Avatar, Job, Organization, Location, Email, Certification)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO users (UserNo, UserName, UserPassword, UserPermissions, Email, Telephone)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """
-                # 使用 execute_query 来执行插入，它会提交事务
-                execute_query(conn, insert_query, (username, hashed_password, permissions, avatar, job, org, loc, email, cert), is_insert=True)
-                current_app.logger.info(f"用户 '{username}' 已创建。")
+                execute_query(conn, insert_query, (userno, username, password, permissions, email, telephone), is_insert=True)
+                current_app.logger.info(f"用户 '{username}' (UserNo: {userno}) 已创建。")
             else:
-                current_app.logger.info(f"用户 '{username}' 已存在。")
-        # 提交所有用户插入的事务（如果循环中有多个，execute_query 每次插入后会提交，但这里可以再确认一次）
-        # conn.commit() # execute_query 已经处理了提交，此处可省略
+                current_app.logger.info(f"用户 '{username}' (UserNo: {userno}) 已存在。")
+        conn.commit()
         current_app.logger.info("Initial users checked/created.")
 
 

@@ -4,7 +4,7 @@ export default {
   // ... 其他已有的本地化键值对
 
   // 菜单相关的本地化
-    'User.list': '用户列表',
+  'User.list': '用户列表',
   // 用户管理页面的具体文本 (userAdmin.vue 和 UserAdminTable.vue)
   'userAdmin.form.userno': '用户编号',
   'userAdmin.form.userno.placeholder': '请输入用户编号',

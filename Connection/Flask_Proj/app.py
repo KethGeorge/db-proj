@@ -12,9 +12,10 @@ import logging
 from routes.auth import auth_bp
 # from routes.NS import ns_bp
 # from routes.Device import device_bp
-from routes.Users.UserAdmin import user_bp  # 导入我们为用户创建的蓝图
-from routes.Users.UserQuery import user_bp as user_query_bp  # 如果需要查询用户的蓝图
-from routes.Users.UserModify import user_modify_bp  # 用户修改的蓝图
+# from routes.Users.UserAdmin import user_bp  # 导入我们为用户创建的蓝图
+# from routes.Users.UserQuery import user_bp as user_query_bp  # 如果需要查询用户的蓝图
+# from routes.Users.UserModify import user_modify_bp  # 用户修改的蓝图
+from routes.userAdmin.userAdminAPI import user_admin_bp  # 用户管理相关的蓝图
 
 from routes.NationalStandard.NationalStandardAPI import national_standard_bp  # 国家标准相关的蓝图
 from routes.Material.materialAPI import material_bp  # 材料相关的蓝图
@@ -35,10 +36,10 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix='/api')
     # app.register_blueprint(ns_bp, url_prefix='/api')
     # app.register_blueprint(device_bp, url_prefix='/api')
-    app.register_blueprint(user_bp, url_prefix='/api')  # 注册用户蓝图
-    app.register_blueprint(user_query_bp, url_prefix='/api')  # 注册用户查询蓝图
-    app.register_blueprint(user_modify_bp, url_prefix='/api')  # 注册用户修改蓝图
-    
+    # app.register_blueprint(user_bp, url_prefix='/api')  # 注册用户蓝图
+    # app.register_blueprint(user_query_bp, url_prefix='/api')  # 注册用户查询蓝图
+    # app.register_blueprint(user_modify_bp, url_prefix='/api')  # 注册用户修改蓝图
+    app.register_blueprint(user_admin_bp, url_prefix='/api')  # 注册用户管理相关蓝图
     app.register_blueprint(national_standard_bp, url_prefix='/api')  # 注册国家标准相关蓝图
     app.register_blueprint(material_bp, url_prefix='/api')  # 注册材料相关蓝图
     app.register_blueprint(device_bp, url_prefix='/api')  # 注册设备相关蓝图

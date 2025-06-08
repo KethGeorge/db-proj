@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['Material', 'Material.list']" />
-    <a-card class="general-card" :title="$t('material.list')">
+    <Breadcrumb :items="['User', 'User.list']" />
+    <a-card class="general-card" :title="$t('User.list')">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -13,23 +13,54 @@
             <a-row :gutter="16">
               <a-col :span="8">
                 <a-form-item
-                  field="MaterialCode"
-                  :label="$t('material.form.MaterialCode')"
+                  field="UserNo"
+                  :label="$t('userAdmin.form.UserNo')"
                 >
                   <a-input
-                    v-model="formModel.MaterialCode"
-                    :placeholder="$t('material.form.MaterialCode.placeholder')"
+                    v-model="formModel.UserNo"
+                    :placeholder="$t('userAdmin.form.UserNo.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
-                  field="MaterialName"
-                  :label="$t('material.form.MaterialName')"
+                  field="UserName"
+                  :label="$t('userAdmin.form.UserName')"
                 >
                   <a-input
-                    v-model="formModel.MaterialName"
-                    :placeholder="$t('material.form.MaterialName.placeholder')"
+                    v-model="formModel.UserName"
+                    :placeholder="$t('userAdmin.form.UserName.placeholder')"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item field="Email" :label="$t('userAdmin.form.Email')">
+                  <a-input
+                    v-model="formModel.Email"
+                    :placeholder="$t('userAdmin.form.Email.placeholder')"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  field="UserPermissions"
+                  :label="$t('userAdmin.form.UserPermissions')"
+                >
+                  <a-select
+                    v-model="formModel.UserPermissions"
+                    :options="userPermissionsOptions"
+                    :placeholder="$t('userAdmin.form.selectDefault')"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  field="Telephone"
+                  :label="$t('userAdmin.form.Telephone')"
+                >
+                  <a-input
+                    v-model="formModel.Telephone"
+                    :placeholder="$t('userAdmin.form.Telephone.placeholder')"
                   />
                 </a-form-item>
               </a-col>
@@ -43,13 +74,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('material.form.search') }}
+              {{ $t('userAdmin.form.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('material.form.reset') }}
+              {{ $t('userAdmin.form.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -58,11 +89,11 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="handleCreateMaterial">
+            <a-button type="primary" @click="handleCreateUser">
               <template #icon>
                 <icon-plus />
               </template>
-              {{ $t('material.operation.create') }}
+              {{ $t('userAdmin.operation.create') }}
             </a-button>
           </a-space>
         </a-col>
@@ -70,13 +101,13 @@
           :span="12"
           style="display: flex; align-items: center; justify-content: end"
         >
-          <a-tooltip :content="$t('material.actions.refresh')">
+          <a-tooltip :content="$t('userAdmin.actions.refresh')">
             <div class="action-icon" @click="search">
               <icon-refresh size="18" />
             </div>
           </a-tooltip>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('material.actions.density')">
+            <a-tooltip :content="$t('userAdmin.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -90,7 +121,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('material.actions.columnSetting')">
+          <a-tooltip :content="$t('userAdmin.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -127,7 +158,7 @@
         </a-col>
       </a-row>
       <a-table
-        row-key="MaterialCode"
+        row-key="UserNo"
         :loading="loading"
         :pagination="pagination"
         :columns="(cloneColumns as TableColumnData[])"
@@ -139,26 +170,29 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
+        <template #UserPermissions="{ record }">
+          {{ $t(`userAdmin.form.UserPermissions.${record.UserPermissions}`) }}
+        </template>
         <template #operations="{ record }">
           <a-space :size="8">
             <a-button
               type="text"
               size="small"
-              @click="handleView(record.MaterialCode)"
+              @click="handleView(record.UserNo)"
             >
-              {{ $t('material.columns.operations.view') }}
+              {{ $t('userAdmin.columns.operations.view') }}
             </a-button>
             <a-button
               v-permission="['admin']"
               type="text"
               size="small"
-              @click="handleEdit(record.MaterialCode)"
+              @click="handleEdit(record.UserNo)"
             >
-              {{ $t('material.columns.operations.edit') }}
+              {{ $t('userAdmin.columns.operations.edit') }}
             </a-button>
             <a-popconfirm
-              :content="$t('material.message.confirmDelete')"
-              @ok="handleDelete(record.MaterialCode)"
+              :content="$t('userAdmin.message.confirmDelete')"
+              @ok="handleDelete(record.UserNo)"
             >
               <a-button
                 v-permission="['admin']"
@@ -166,7 +200,7 @@
                 status="danger"
                 size="small"
               >
-                {{ $t('material.columns.operations.delete') }}
+                {{ $t('userAdmin.columns.operations.delete') }}
               </a-button>
             </a-popconfirm>
           </a-space>
@@ -181,12 +215,13 @@
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
   import {
-    queryMaterialList,
-    deleteMaterial,
-    MaterialRecord,
-    MaterialParams,
-  } from '@/api/materials'; // 导入新的API
+    queryUserList,
+    deleteUser,
+    type UserRecord,
+    type UserParams,
+  } from '@/api/userAdmin'; // <-- 导入新 API
   import { Pagination } from '@/types/global';
+  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
@@ -198,15 +233,18 @@
 
   const generateFormModel = () => {
     return {
-      MaterialCode: '',
-      MaterialName: '',
+      UserNo: '',
+      UserName: '',
+      Email: '',
+      UserPermissions: '',
+      Telephone: '',
     };
   };
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
   const router = useRouter();
 
-  const renderData = ref<MaterialRecord[]>([]);
+  const renderData = ref<UserRecord[]>([]);
   const formModel = ref(generateFormModel());
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -221,27 +259,52 @@
     ...basePagination,
   });
   const densityList = computed(() => [
-    { name: t('material.size.mini'), value: 'mini' },
-    { name: t('material.size.small'), value: 'small' },
-    { name: t('material.size.medium'), value: 'medium' },
-    { name: t('material.size.large'), value: 'large' },
+    {
+      name: t('userAdmin.size.mini'),
+      value: 'mini',
+    },
+    {
+      name: t('userAdmin.size.small'),
+      value: 'small',
+    },
+    {
+      name: t('userAdmin.size.medium'),
+      value: 'medium',
+    },
+    {
+      name: t('userAdmin.size.large'),
+      value: 'large',
+    },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('material.columns.index'),
+      title: t('userAdmin.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('material.columns.MaterialCode'),
-      dataIndex: 'MaterialCode',
+      title: t('userAdmin.columns.UserNo'),
+      dataIndex: 'UserNo',
     },
     {
-      title: t('material.columns.MaterialName'),
-      dataIndex: 'MaterialName',
+      title: t('userAdmin.columns.UserName'),
+      dataIndex: 'UserName',
     },
     {
-      title: t('material.columns.operations'),
+      title: t('userAdmin.columns.UserPermissions'),
+      dataIndex: 'UserPermissions',
+      slotName: 'UserPermissions',
+    },
+    {
+      title: t('userAdmin.columns.Email'),
+      dataIndex: 'Email',
+    },
+    {
+      title: t('userAdmin.columns.Telephone'),
+      dataIndex: 'Telephone',
+    },
+    {
+      title: t('userAdmin.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       fixed: 'right',
@@ -249,24 +312,41 @@
     },
   ]);
 
+  // 用户权限选项，根据你的实际权限列表调整
+  const userPermissionsOptions = computed<SelectOptionData[]>(() => [
+    {
+      label: t('userAdmin.form.UserPermissions.admin'),
+      value: 'admin',
+    },
+    {
+      label: t('userAdmin.form.UserPermissions.user'),
+      value: 'user',
+    },
+    {
+      label: t('userAdmin.form.UserPermissions.guest'),
+      value: 'guest',
+    },
+  ]);
+
   const fetchData = async (
-    params: MaterialParams = { current: 1, pageSize: 20 }
+    params: UserParams = { current: 1, pageSize: 20 }
   ) => {
     setLoading(true);
     try {
-      const apiResponse = await queryMaterialList(params);
+      const apiResponse = await queryUserList(params);
       if (apiResponse) {
         renderData.value = apiResponse.list;
-        console.log('获取材料列表成功:', renderData.value);
+        console.log('获取用户列表成功:', renderData.value);
         pagination.current = params.current;
         pagination.total = apiResponse.total;
       } else {
         renderData.value = [];
         pagination.total = 0;
-        console.warn('获取材料列表成功，但后端返回的业务数据为空。');
+        console.warn('获取用户列表成功，但后端返回的业务数据为空。');
       }
     } catch (err: any) {
-      console.error('获取材料列表失败:', err);
+      console.error('获取用户列表失败:', err);
+      Message.error(`获取用户列表出错: ${err.message || '未知错误'}`);
     } finally {
       setLoading(false);
     }
@@ -276,7 +356,7 @@
     fetchData({
       ...basePagination,
       ...formModel.value,
-    } as unknown as MaterialParams);
+    } as UserParams);
   };
   const onPageChange = (current: number) => {
     fetchData({ ...basePagination, current });
@@ -289,7 +369,8 @@
   };
 
   const handleSelectDensity = (
-    val: string | number | Record<string, any> | undefined
+    val: string | number | Record<string, any> | undefined,
+    e: Event
   ) => {
     size.value = val as SizeProps;
   };
@@ -330,7 +411,6 @@
       nextTick(() => {
         const el = document.getElementById('tableSetting') as HTMLElement;
         if (el) {
-          // 确保元素存在
           const sortable = new Sortable(el, {
             onEnd(e: any) {
               const { oldIndex, newIndex } = e;
@@ -343,48 +423,47 @@
     }
   };
 
-  const handleCreateMaterial = () => {
+  const handleCreateUser = () => {
     router.push({
-      name: 'MaterialAdminCreate',
+      name: 'UserAdminCreate',
     });
   };
 
-  const handleView = (materialCode: string | undefined) => {
-    if (!materialCode) {
-      Message.error(t('material.message.idMissingForView'));
+  const handleView = (userno: string | undefined) => {
+    if (!userno) {
+      Message.error(t('userAdmin.message.idMissingForView'));
       return;
     }
     router.push({
-      name: 'MaterialAdminView',
-      params: { materialCode },
+      name: 'UserAdminView',
+      params: { userno },
     });
   };
-
-  const handleEdit = (materialCode: string | undefined) => {
-    if (!materialCode) {
-      Message.error(t('material.message.idMissingForEdit'));
+  const handleEdit = (userno: string | undefined) => {
+    if (!userno) {
+      Message.error(t('userAdmin.message.idMissingForEdit'));
       return;
     }
     router.push({
-      name: 'MaterialAdminEdit',
-      params: { materialCode },
+      name: 'UserAdminEdit',
+      params: { userno },
     });
   };
 
-  const handleDelete = async (materialCode: string | undefined) => {
-    if (!materialCode) {
-      Message.error(t('material.message.idMissingForDelete'));
+  const handleDelete = async (userno: string | undefined) => {
+    if (!userno) {
+      Message.error(t('userAdmin.message.idMissingForDelete'));
       return;
     }
     setLoading(true);
     try {
-      await deleteMaterial(materialCode);
-      Message.success(t('material.message.deleteSuccess'));
+      await deleteUser(userno);
+      Message.success(t('userAdmin.message.deleteSuccess'));
       search();
     } catch (error: any) {
-      console.error('删除材料失败:', error);
+      console.error('删除用户失败:', error);
       Message.error(
-        `${t('material.message.deleteFail')}: ${error.message || '未知错误'}`
+        `${t('userAdmin.message.deleteFail')}: ${error.message || '未知错误'}`
       );
     } finally {
       setLoading(false);
@@ -406,7 +485,7 @@
 
 <script lang="ts">
   export default {
-    name: 'MaterialList',
+    name: 'UserAdminTable',
   };
 </script>
 

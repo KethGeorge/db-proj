@@ -32,8 +32,8 @@ import localeDevice from '@/views/Device/locale/zh-CN';
 
 import localeMaterialAdmin from '@/views/material/locale/zh-CN';
 import localeNS2 from '@/views/NS2/locale/zh-CN';
-import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
-import localeUserAdmin from '@/views/UserAdmin/locale/zh-CN';
+// import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
+import localeUserAdmin from '@/views/userAdmin/locale/zh-CN';
 import localeExperiment from '@/views/experiment/locale/zh-CN';
 // Final line
 import localeSettings from './zh-CN/settings';
@@ -54,11 +54,6 @@ export default {
   'menu.faq': '常见问题',
   'navbar.docs': '文档中心',
   'navbar.action.locale': '切换为中文',
-  'menu.userAdmin.create': '创建新用户',
-  'menu.userAdmin': '管理用户',
-  'menu.userAdmin.list': '用户列表',
-  'menu.userAdmin.edit': '编辑用户',
-  'menu.userAdmin.view': '查看用户信息',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
@@ -83,7 +78,7 @@ export default {
   ...localeProtocol,
   ...localeDevice,
   ...localeUserAdmin,
-  ...localeUserQuery,
+  //   ...localeUserQuery,
   ...localeNS2,
   ...localeMaterialAdmin,
   ...localeExperiment,

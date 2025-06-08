@@ -63,25 +63,14 @@
                   },
                 ]"
               >
-                <a-select
-                  v-model="materialCodeComputed"
+                <SearchSelect
+                  v-model="formData.MaterialCode"
+                  :api-function="searchMaterials"
+                  key-field="MaterialCode"
+                  label-field="MaterialName"
                   :placeholder="$t('experiment.form.placeholder.MaterialCode')"
                   :disabled="!isEdit && !isCreate"
-                  :allow-clear="true"
-                  :show-search="true"
-                  :filter-option="false"
-                  :allow-search="true"
-                  @change="handleMaterialChange"
-                  @search="handleMaterialSearch"
-                >
-                  <a-option
-                    v-for="item in materialOptions"
-                    :key="item.MaterialCode"
-                    :value="item.MaterialCode"
-                  >
-                    {{ item.MaterialName }} ({{ item.MaterialCode }})
-                  </a-option>
-                </a-select>
+                />
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -95,27 +84,15 @@
                   },
                 ]"
               >
-                <a-select
-                  v-model="protocolNoComputed"
+                <SearchSelect
+                  v-model="formData.ProtocolNo"
+                  :api-function="searchProtocols"
+                  key-field="ProtocolNo"
+                  label-field="ProtocolNo"
+                  description-field="NSN"
                   :placeholder="$t('experiment.form.placeholder.ProtocolNo')"
                   :disabled="!isEdit && !isCreate"
-                  :allow-clear="true"
-                  :show-search="true"
-                  :filter-option="false"
-                  :allow-search="true"
-                  @search="handleProtocolSearch"
-                  @change="handleProtocolChange"
-                >
-                  <a-option
-                    v-for="item in protocolOptions"
-                    :key="item.ProtocolNo"
-                    :value="item.ProtocolNo"
-                  >
-                    {{ item.ProtocolNo }} ({{
-                      item.NSN || $t('groupForm.noDescription')
-                    }})
-                  </a-option>
-                </a-select>
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -137,25 +114,14 @@
                   },
                 ]"
               >
-                <a-select
+                <SearchSelect
                   v-model="formData.UserNo"
+                  :api-function="searchUsers"
+                  key-field="UserNo"
+                  label-field="UserName"
                   :placeholder="$t('experiment.form.placeholder.UserNo')"
                   :disabled="!isEdit && !isCreate"
-                  :allow-clear="true"
-                  :show-search="true"
-                  :filter-option="false"
-                  :allow-search="true"
-                  @search="handleUserSearch"
-                  @change="handleUserChange"
-                >
-                  <a-option
-                    v-for="item in userOptions"
-                    :key="item.UserNo"
-                    :value="item.UserNo"
-                  >
-                    {{ item.UserName }} ({{ item.UserNo }})
-                  </a-option>
-                </a-select>
+                />
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -287,7 +253,7 @@
   import { searchUsers, type UserSearchRecord } from '@/api/userAdmin';
   // 移除 Device 搜索 API 和类型
   // import { searchDevices, type DeviceSearchRecord } from '@/api/device';
-
+  import SearchSelect from '@/components/searchSelect/index.vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import cloneDeep from 'lodash/cloneDeep';
@@ -384,155 +350,20 @@
   // --- 外键选择器相关逻辑 START ---
   // 材料选择器相关
   const materialOptions = ref<MaterialRecord[]>([]);
-  const materialSearchTimeout = ref<number | null>(null);
   // 移除 materialSearchValue，因为不再手动管理 input-value
   // const materialSearchValue = ref<string>('');
-
-  const handleMaterialSearch = async (searchValue: string) => {
-    console.log('MaterialSearch triggered with:', searchValue);
-    if (materialSearchTimeout.value) {
-      clearTimeout(materialSearchTimeout.value);
-    }
-    materialOptions.value = []; // 每次搜索前清空旧选项，避免显示不相关的旧选项
-    if (!searchValue) {
-      return;
-    }
-    // 防抖处理：等待 300ms 后再发送请求
-    materialSearchTimeout.value = setTimeout(async () => {
-      try {
-        const result = await searchMaterials({ query: searchValue });
-        materialOptions.value = result;
-        console.log('Material search results:', result);
-      } catch (error) {
-        console.error('搜索材料失败:', error);
-        Message.error('搜索材料失败');
-        materialOptions.value = [];
-      }
-    }, 300) as unknown as number;
-  };
-
-  // 修正 handleMaterialChange 的参数类型，使其能接受 Arco Design Vue 的 a-select @change 事件的实际复杂类型
-  const handleMaterialChange = (
-    value:
-      | string
-      | number
-      | Record<string, any>
-      | undefined
-      | (string | number | Record<string, any>)[]
-      | boolean
-  ) => {
-    if (Array.isArray(value) || typeof value === 'boolean') {
-      // 对于多选数组或布尔值，视为清空或无效操作
-      materialOptions.value = [];
-      return;
-    }
-    // value 就是 materialCodeComputed setter 接收到的值
-    // 这里不需要额外设置 materialSearchValue，因为 a-select 会根据 v-model 自动显示其 label
-    // 并且我们移除了 input-value 绑定
-    materialCodeComputed.value = value as string | undefined; // 明确赋值给计算属性，触发其setter
-  };
 
   // 移除 handleMaterialInputValueChange，因为不再手动管理 input-value
   // const handleMaterialInputValueChange = (value: string) => { /* ... */ };
 
   // 协议选择器相关
   const protocolOptions = ref<ProtocolSearchRecord[]>([]);
-  const protocolSearchTimeout = ref<number | null>(null);
-  // 移除 protocolSearchValue
-  // const protocolSearchValue = ref<string>('');
-
-  const handleProtocolSearch = async (searchValue: string) => {
-    console.log('ProtocolSearch triggered with:', searchValue);
-    if (protocolSearchTimeout.value) {
-      clearTimeout(protocolSearchTimeout.value);
-    }
-    protocolOptions.value = [];
-    if (!searchValue) {
-      return;
-    }
-    protocolSearchTimeout.value = setTimeout(async () => {
-      try {
-        const result = await searchProtocols({ query: searchValue });
-        protocolOptions.value = result;
-        console.log('Protocol search results:', result);
-      } catch (error) {
-        console.error('搜索协议失败:', error);
-        Message.error('搜索协议失败');
-        protocolOptions.value = [];
-      }
-    }, 300) as unknown as number;
-  };
-
-  const handleProtocolChange = (
-    value:
-      | string
-      | number
-      | Record<string, any>
-      | undefined
-      | (string | number | Record<string, any>)[]
-      | boolean
-  ) => {
-    if (Array.isArray(value) || typeof value === 'boolean') {
-      protocolOptions.value = [];
-      return;
-    }
-    // 移除对 protocolSearchValue 的操作
-    protocolNoComputed.value = value as string | undefined; // 确保 v-model 绑定的计算属性被更新
-  };
 
   // 移除 handleProtocolInputValueChange
   // const handleProtocolInputValueChange = (value: string) => { /* ... */ };
 
   // 用户选择器相关
   const userOptions = ref<UserSearchRecord[]>([]);
-  const userSearchTimeout = ref<number | null>(null);
-  // 移除 userSearchValue
-  // const userSearchValue = ref<string>('');
-
-  const handleUserSearch = async (searchValue: string) => {
-    console.log('UserSearch triggered with:', searchValue);
-    if (userSearchTimeout.value) {
-      clearTimeout(userSearchTimeout.value);
-    }
-    userOptions.value = [];
-    if (!searchValue) {
-      return;
-    }
-    userSearchTimeout.value = setTimeout(async () => {
-      try {
-        const result = await searchUsers({ query: searchValue });
-        userOptions.value = result;
-        console.log('User search results:', result);
-      } catch (error) {
-        console.error('搜索用户失败:', error);
-        Message.error('搜索用户失败');
-        userOptions.value = [];
-      }
-    }, 300) as unknown as number;
-  };
-
-  const handleUserChange = (
-    value:
-      | string
-      | number
-      | Record<string, any>
-      | undefined
-      | (string | number | Record<string, any>)[]
-      | boolean
-  ) => {
-    if (Array.isArray(value) || typeof value === 'boolean') {
-      userOptions.value = [];
-      return;
-    }
-    if (value === undefined || value === null || value === '') {
-      formData.UserNo = ''; // UserNo 是必填，如果清空，确保 formData.UserNo 变为 ''
-    } else {
-      // v-model 已经绑定到 formData.UserNo，这里不需要再赋值
-      // formData.UserNo = value as string; // 这行应该由 v-model 自动处理
-      formData.UserNo = value.toString(); // 确保是 string，如果 v-model 没起作用
-    }
-    // 移除对 userSearchValue 的操作
-  };
 
   // 移除 handleUserInputValueChange
   // const handleUserInputValueChange = (value: string) => { /* ... */ };
@@ -665,24 +496,24 @@ const handleDeviceInputValueChange = (value: string) => { /* ... * / };
       }
       // DeviceNo (因为需求中已移除，所以这里的逻辑也移除)
       /*
-        if (formData.DeviceNo) {
-            console.log("Fetching initial Device for:", formData.DeviceNo);
-            try {
-                const currentDevice = await searchDevices({ query: formData.DeviceNo });
-                if (currentDevice.length > 0 && currentDevice[0].DeviceNo === formData.DeviceNo) {
-                    if (!deviceOptions.value.some(item => item.DeviceNo === currentDevice[0].DeviceNo)) {
-                        deviceOptions.value.push(currentDevice[0]);
-                    }
-                } else {
-                    console.log("Initial Device not found or mismatched for:", formData.DeviceNo);
-                    formData.DeviceNo = undefined;
-                }
-            } catch (e) {
-                console.error('加载已选设备信息失败:', e);
-                formData.DeviceNo = undefined;
-            }
-        }
-        */
+          if (formData.DeviceNo) {
+              console.log("Fetching initial Device for:", formData.DeviceNo);
+              try {
+                  const currentDevice = await searchDevices({ query: formData.DeviceNo });
+                  if (currentDevice.length > 0 && currentDevice[0].DeviceNo === formData.DeviceNo) {
+                      if (!deviceOptions.value.some(item => item.DeviceNo === currentDevice[0].DeviceNo)) {
+                          deviceOptions.value.push(currentDevice[0]);
+                      }
+                  } else {
+                      console.log("Initial Device not found or mismatched for:", formData.DeviceNo);
+                      formData.DeviceNo = undefined;
+                  }
+              } catch (e) {
+                  console.error('加载已选设备信息失败:', e);
+                  formData.DeviceNo = undefined;
+              }
+          }
+          */
       // --- 编辑/查看模式下，加载外键对应的显示名称 END ---
     } catch (error: any) {
       Message.error(

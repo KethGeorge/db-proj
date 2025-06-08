@@ -14,7 +14,6 @@ const experimentRoute: RouteRecordRaw[] = [
       requiresAuth: true, // 是否需要登录权限
       icon: 'icon-bulb', // 侧边栏菜单图标 (对应 Arco Design 图标库)
       order: 3, // 在侧边栏菜单中的排序 (数字越小越靠前)
- 
     },
     children: [
       {

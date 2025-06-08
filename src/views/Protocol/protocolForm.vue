@@ -63,9 +63,12 @@
                   },
                 ]"
               >
-                <a-input
+                <SelectSearch
                   v-model="formData.MaterialCode"
-                  :placeholder="$t('protocol.form.placeholder.MaterialCode')"
+                  :api-function="searchMaterials"
+                  key-field="MaterialCode"
+                  label-field="MaterialName"
+                  :placeholder="$t('experiment.form.placeholder.MaterialCode')"
                   :disabled="!isEdit && !isCreate"
                 />
               </a-form-item>
@@ -86,9 +89,12 @@
                   },
                 ]"
               >
-                <a-input
+                <SelectSearch
                   v-model="formData.UserNo"
-                  :placeholder="$t('protocol.form.placeholder.UserNo')"
+                  :api-function="searchUsers"
+                  key-field="UserNo"
+                  label-field="UserName"
+                  :placeholder="$t('experiment.form.placeholder.UserNo')"
                   :disabled="!isEdit && !isCreate"
                 />
               </a-form-item>
@@ -107,10 +113,12 @@
                   },
                 ]"
               >
-                <a-input
+                <SelectSearch
                   v-model="formData.NSN"
+                  :api-function="searchNationalStandards"
+                  key-field="NSN"
+                  label-field="NSN"
                   :placeholder="$t('protocol.form.placeholder.NSN')"
-                  :disabled="!isEdit && !isCreate"
                 />
               </a-form-item>
             </a-col>
@@ -259,6 +267,13 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import cloneDeep from 'lodash/cloneDeep';
+  import SelectSearch from '@/components/searchSelect/index.vue';
+  import { searchUsers, type UserSearchRecord } from '@/api/userAdmin';
+  import { searchMaterials, type MaterialSearchRecord } from '@/api/materials';
+  import {
+    searchNationalStandards,
+    type NationalStandardSearchRecord,
+  } from '@/api/protocol';
 
   const formRef = ref<FormInstance>();
   const { loading, setLoading } = useLoading();

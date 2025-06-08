@@ -2,7 +2,7 @@
   <div class="container">
     <Breadcrumb
       :items="[
-        'Device',
+        'device',
         isCreate
           ? 'device.form.title.create'
           : isEdit

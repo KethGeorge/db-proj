@@ -2,6 +2,11 @@
 import axios from 'axios';
 import qs from 'query-string';
 
+import {
+  searchNationalStandards,
+  type NationalStandardSearchRecord,
+} from '@/api/NationalStandard';
+
 // ProtocolRecord 接口用于表示单个协议记录的结构
 // 所有字段都可能为可选，因为在更新时只传部分字段
 export interface ProtocolRecord {
@@ -27,6 +32,9 @@ export interface ProtocolListRes {
   list: ProtocolRecord[];
   total: number;
 }
+
+// 重新导出 NationalStandard 搜索函数和相关类型
+export { searchNationalStandards, type NationalStandardSearchRecord };
 
 // --- API 函数定义 ---
 

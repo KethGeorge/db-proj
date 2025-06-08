@@ -150,3 +150,29 @@ class NationalStandardModel:
         except Error as e:
             current_app.logger.error(f"数据库错误 (get_paginated_list): {e}")
             raise e
+    @staticmethod
+    def search_by_keyword(keyword, limit=10): # <-- 新增的搜索方法
+        """根据关键词搜索国家标准，并返回 NSN 和 StandardName"""
+        conn = get_db_connection()
+        if not conn: return []
+        try:
+            search_query = f"""
+            SELECT NSN, StandardName
+            FROM {NationalStandardModel.TABLE_NAME}
+            WHERE NSN LIKE %s OR StandardName LIKE %s
+            LIMIT %s
+            """
+            params = (f"%{keyword}%", f"%{keyword}%", limit)
+            
+            results_raw = execute_query(conn, search_query, params, fetch_all=True)
+            
+            standards = []
+            for row in results_raw:
+                standards.append({
+                    'NSN': row[0],
+                    'StandardName': row[1]
+                })
+            return standards
+        except Error as e:
+            current_app.logger.error(f"数据库错误 (NationalStandardModel.search_by_keyword): {e}", exc_info=True)
+            raise e

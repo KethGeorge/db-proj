@@ -20,7 +20,6 @@ def generate_random_nsn(length=12, prefix="STD-"):
 
 @national_standard_bp.route('/national_standard', methods=['POST'])
 @token_required # 假设创建标准需要认证
-# @has_role(['admin']) # 可选：如果只有管理员能创建
 def add_national_standard():
     current_app.logger.info("National standard creation data received")
     if not request.is_json:
@@ -28,43 +27,38 @@ def add_national_standard():
 
     data = request.get_json()
     
-    # 检查必填字段
-    required_fields = ['StandardName'] # NSN可以由后端生成，Description和MaterialCode可选
+    # 核心修改：NSN 现在是必填字段
+    required_fields = ['NSN', 'StandardName'] # 将 NSN 加入必填列表
     for field in required_fields:
         if field not in data or not data[field] or (isinstance(data[field], str) and not data[field].strip()):
             current_app.logger.warning(f'字段 "{field}" 不能为空或仅包含空格')
             return fail_response_wrap(None, f'字段 "{field}" 不能为空', 40001)
 
+    nsn = data.get('NSN') # 获取前端提供的 NSN
     standard_name = data.get('StandardName')
     description = data.get('Description')
     material_code = data.get('MaterialCode')
     
     # 模拟操作者信息
     operator = request.user.get('username', 'unknown')
-    current_app.logger.info(f"User '{operator}' is creating a new national standard.")
+    current_app.logger.info(f"User '{operator}' is creating a new national standard with NSN: {nsn}.")
     current_app.logger.info(f"Received Standard Data: {data}")
 
-    nsn = None
-    # 尝试生成唯一的NSN，重试机制
-    for _ in range(10): # 最多尝试10次
-        temp_nsn = generate_random_nsn()
-        existing_nsn_record = NationalStandardModel.find_by_nsn(temp_nsn)
-        if not existing_nsn_record:
-            nsn = temp_nsn
-            break
-    if nsn is None:
-        current_app.logger.error("无法生成唯一的NSN，请稍后重试。")
-        return fail_response_wrap(None, '无法生成唯一的标准编号，请稍后重试。', 50001)
-    current_app.logger.info(f"Generated unique NSN: {nsn}")
-    data['NSN'] = nsn # 将生成的NSN添加到数据中
+    # 移除随机生成 NSN 的逻辑
+    # for _ in range(10): ...
 
     try:
+        # 核心修改：检查前端提供的 NSN 是否已存在
+        existing_nsn_record = NationalStandardModel.find_by_nsn(nsn)
+        if existing_nsn_record:
+            return fail_response_wrap(None, f'NSN "{nsn}" 已存在，请使用其他编号。', 40003)
+
         # 检查 StandardName 是否已存在（如果 StandardName 要求唯一）
-        # 假设 StandardName 不强制唯一，如果需要唯一，请取消注释以下代码
         existing_standard_by_name = NationalStandardModel.find_by_name(standard_name)
         if existing_standard_by_name:
              return fail_response_wrap(None, f'标准名称 "{standard_name}" 已存在，请使用其他名称。', 40003)
 
+        # data 已经包含了前端提供的所有信息，直接传递给 create 方法
         if NationalStandardModel.create(data):
             current_app.logger.info(f"国家标准信息插入成功: NSN={nsn}, StandardName={standard_name}")
             return success_response_wrap({
@@ -76,14 +70,14 @@ def add_national_standard():
             return fail_response_wrap(None, '国家标准信息插入数据库失败', 50000)
     except Error as db_error:
         current_app.logger.error(f"数据库操作错误 (add_national_standard): {db_error}")
-        if db_error.errno == 1062: # Duplicate entry for key
+        if db_error.errno == 1062: # Duplicate entry for key (NSN or StandardName)
             return fail_response_wrap(None, f'NSN或标准名称已存在，请检查。', 40003)
         return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
     except ValueError as val_error:
         current_app.logger.warning(f"请求数据校验失败: {val_error}")
         return fail_response_wrap(None, str(val_error), 40001)
     except Exception as e:
-        current_app.logger.error(f"处理 /api/national_standard 请求错误: {e}", exc_info=True)
+        current_app.logger.error(f"处理 /api/national_standard POST 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
 
 @national_standard_bp.route('/national_standards', methods=['GET'])
@@ -234,4 +228,25 @@ def delete_national_standard(nsn):
         return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
     except Exception as e:
         current_app.logger.error(f"处理 /api/national_standards/{nsn} DELETE 请求错误: {e}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
+
+@national_standard_bp.route('/national_standards/search', methods=['GET']) # <-- 新增的搜索接口
+@token_required
+def search_national_standards_api():
+    query_param = request.args.get('query', '').strip()
+    limit = int(request.args.get('limit', 10))
+
+    current_app.logger.info(f"Received search request for national standards with query: '{query_param}' and limit: {limit}")
+
+    try:
+        # 调用 Model 层方法
+        standards = NationalStandardModel.search_by_keyword(query_param, limit)
+        
+        return success_response_wrap(standards, '国家标准搜索成功')
+
+    except Error as db_error:
+        current_app.logger.error(f"数据库操作错误 (search_national_standards_api): {db_error}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
+    except Exception as e:
+        current_app.logger.error(f"处理 /api/national_standards/search GET 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)

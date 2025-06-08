@@ -71,8 +71,11 @@
                 :label="$t('nationalStandard.form.label.MaterialCode')"
                 field="MaterialCode"
               >
-                <a-input
+                <SelectSearch
                   v-model="formData.MaterialCode"
+                  :api-function="searchMaterials"
+                  key-field="MaterialCode"
+                  label-field="MaterialName"
                   :placeholder="
                     $t('nationalStandard.form.placeholder.MaterialCode')
                   "
@@ -136,6 +139,8 @@
   } from '@/api/NationalStandard';
   import { useRoute, useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
+  import { searchMaterials, type MaterialSearchRecord } from '@/api/materials';
+  import SelectSearch from '@/components/searchSelect/index.vue';
 
   const { t } = useI18n();
   const formRef = ref<FormInstance>();

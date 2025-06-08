@@ -27,13 +27,13 @@ import locale500 from '@/views/exception/500/locale/zh-CN';
 import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
-import localeProtocol from '@/views/protocol/locale/zh-CN';
+import localeProtocol from '@/views/Protocol/locale/zh-CN';
 import localeDevice from '@/views/Device/locale/zh-CN';
 
 import localeMaterialAdmin from '@/views/material/locale/zh-CN';
 import localeNS2 from '@/views/NS2/locale/zh-CN';
 import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
-import localeUserAdmin from '@/views/userAdmin/locale/zh-CN';
+import localeUserAdmin from '@/views/UserAdmin/locale/zh-CN';
 import localeExperiment from '@/views/experiment/locale/zh-CN';
 // Final line
 import localeSettings from './zh-CN/settings';

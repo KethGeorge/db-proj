@@ -3,10 +3,10 @@ import { RouteRecordRaw } from 'vue-router';
 // 导入你的用户管理表单组件
 // 根据我们之前讨论的文件路径，它位于 views/user/index.vue
 // 确保这里的路径是正确的
-import UserAdminFormPage from '@/views/userAdmin/indexNew.vue';
+import UserAdminFormPage from '@/views/UserAdmin/indexNew.vue';
 import UserAdminTable from '@/views/UserQuery/index.vue';
-import UserEditFormPage from '@/views/userAdmin/indexNew.vue'; // 假设你的编辑表单组件路径
-import UserDetailViewPage from '@/views/userAdmin/indexNew.vue';
+import UserEditFormPage from '@/views/UserAdmin/indexNew.vue'; // 假设你的编辑表单组件路径
+import UserDetailViewPage from '@/views/UserAdmin/indexNew.vue';
 
 const userAdminRoute: RouteRecordRaw[] = [
   {

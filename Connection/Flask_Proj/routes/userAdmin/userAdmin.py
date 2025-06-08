@@ -252,3 +252,30 @@ class UserModel:
         except Error as e:
             current_app.logger.error(f"数据库错误 (UserModel.search_by_keyword): {e}", exc_info=True)
             raise e
+    
+    @staticmethod
+    def search_by_keyword(keyword, limit=10):
+        """根据关键词搜索用户，并返回 UserNo 和 UserName"""
+        conn = get_db_connection()
+        if not conn: return []
+        try:
+            search_query = f"""
+            SELECT UserNo, UserName
+            FROM {UserModel.TABLE_NAME}
+            WHERE UserNo LIKE %s OR UserName LIKE %s
+            LIMIT %s
+            """
+            params = (f"%{keyword}%", f"%{keyword}%", limit)
+            
+            results_raw = execute_query(conn, search_query, params, fetch_all=True)
+            
+            users = []
+            for row in results_raw:
+                users.append({
+                    'UserNo': row[0],
+                    'UserName': row[1]
+                })
+            return users
+        except Error as e:
+            current_app.logger.error(f"数据库错误 (UserModel.search_by_keyword): {e}", exc_info=True)
+            raise e

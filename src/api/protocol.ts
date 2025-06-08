@@ -13,7 +13,7 @@ export interface ProtocolRecord {
   MixingRadius?: number | null;
   MeasurementInterval?: number | null;
   MaterialCode: string; // 外码，必填
-  UserNo: string;       // 外码，必填
+  UserNo: string; // 外码，必填
 }
 
 // ProtocolParams 接口用于查询列表时的参数
@@ -34,8 +34,11 @@ export interface ProtocolListRes {
  * @description 获取协议列表
  * @param params 查询参数 (页码、每页大小、筛选条件)
  */
-export function queryProtocolList(params: ProtocolParams): Promise<ProtocolListRes> {
-  return axios.get('/api/protocol', { // <-- 路径为 /api/protocol
+export function queryProtocolList(
+  params: ProtocolParams
+): Promise<ProtocolListRes> {
+  return axios.get('/api/protocol', {
+    // <-- 路径为 /api/protocol
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -47,7 +50,9 @@ export function queryProtocolList(params: ProtocolParams): Promise<ProtocolListR
  * @description 获取单个协议详情
  * @param protocolNo 协议编码
  */
-export function queryProtocolDetail(protocolNo: string): Promise<ProtocolRecord> {
+export function queryProtocolDetail(
+  protocolNo: string
+): Promise<ProtocolRecord> {
   return axios.get(`/api/protocol/${protocolNo}`); // <-- 路径为 /api/protocol/{id}
 }
 
@@ -64,7 +69,10 @@ export function createProtocol(data: ProtocolRecord): Promise<any> {
  * @param protocolNo 协议编码
  * @param data 包含要更新字段的对象
  */
-export function updateProtocolInfo(protocolNo: string, data: Partial<ProtocolRecord>): Promise<any> {
+export function updateProtocolInfo(
+  protocolNo: string,
+  data: Partial<ProtocolRecord>
+): Promise<any> {
   return axios.put(`/api/protocol/${protocolNo}`, data); // <-- 路径为 /api/protocol/{id}
 }
 
@@ -74,4 +82,26 @@ export function updateProtocolInfo(protocolNo: string, data: Partial<ProtocolRec
  */
 export function deleteProtocol(protocolNo: string): Promise<any> {
   return axios.delete(`/api/protocol/${protocolNo}`); // <-- 路径为 /api/protocol/{id}
+}
+
+export interface ProtocolSearchRecord {
+  ProtocolNo: string;
+  NSN?: string | null; // NSN 作为描述性字段
+}
+
+/**
+ * @description 搜索协议，用于外键选择器
+ * @param params 搜索参数 (query, limit)
+ */
+export function searchProtocols(params: {
+  query: string;
+  limit?: number;
+}): Promise<ProtocolSearchRecord[]> {
+  return axios.get('/api/protocols/search', {
+    // 注意是 /api/protocols/search (复数)
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
+  });
 }

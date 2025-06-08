@@ -9,6 +9,7 @@ export default {
   'menu.experimentAdmin.view': '实验记录详情',
   'menu.experimentAdmin.conduct': '执行实验',
   'experiment': '实验',
+  'Experiment': '实验',
   'experiment.list': '实验记录列表',
 
   'experiment.form.label.ExperimentNo': '实验编号',
@@ -29,7 +30,7 @@ export default {
   'experiment.form.placeholder.ProtocolNo': '请输入策略编码',
   'experiment.form.label.UserNo': '账户编号',
   'experiment.form.placeholder.UserNo': '请输入账户编号',
-    'experiment.conduct.gifDelayMessage': '实验进行中，请稍候...',
+  'experiment.conduct.gifDelayMessage': '实验进行中，请稍候...',
   'experiment.form.search': '查询',
   'experiment.form.reset': '重置',
   'experiment.operation.create': '新建记录',
@@ -61,8 +62,10 @@ export default {
   'experiment.form.title.default': '实验记录信息',
 
   'experiment.form.validation.ExperimentNoRequired': '实验编号不能为空',
-  'experiment.form.validation.ExperimentNoLength': '实验编号长度不能超过16个字符',
-  'experiment.form.validation.MaterialCodeLength': '材料编码长度不能超过16个字符',
+  'experiment.form.validation.ExperimentNoLength':
+    '实验编号长度不能超过16个字符',
+  'experiment.form.validation.MaterialCodeLength':
+    '材料编码长度不能超过16个字符',
   'experiment.form.validation.HeatErrorNumber': '加热实验误差均值必须是数字',
   'experiment.form.validation.MixErrorNumber': '搅拌实验误差均值必须是数字',
   'experiment.form.validation.StartTimeRequired': '开始凝胶时间不能为空',
@@ -81,7 +84,7 @@ export default {
   'experiment.message.deleteFail': '实验记录删除失败',
   'experiment.message.confirmDelete': '确定要删除此实验记录吗？',
   'experiment.message.fetchFail': '获取实验记录信息失败',
-  
+
   // 实验操作页面相关翻译 (保持不变，因为 GelTime 在这里是前端计算显示)
   'experiment.conduct.title': '实验操作',
   'experiment.conduct.preparationTitle': '实验准备阶段',

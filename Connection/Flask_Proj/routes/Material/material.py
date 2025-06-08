@@ -155,3 +155,43 @@ class MaterialModel:
             current_app.logger.error(f"数据库错误 (MaterialModel.get_paginated_list): {e}")
             raise e
         # 注意：这里不关闭连接
+
+    def find_by_code(material_code):
+        """根据 MaterialCode 查询单个材料详情"""
+        conn = get_db_connection()
+        if not conn: return None
+        try:
+            query = f"SELECT {', '.join(MaterialModel.COLUMNS)} FROM {MaterialModel.TABLE_NAME} WHERE MaterialCode = %s"
+            record = execute_query(conn, query, (material_code,), fetch_one=True)
+            if record:
+                return dict(zip(MaterialModel.COLUMNS, record))
+            return None
+        except Error as e:
+            current_app.logger.error(f"数据库错误 (MaterialModel.find_by_code): {e}", exc_info=True)
+            raise e
+    @staticmethod
+    def search_by_keyword(keyword, limit=10): # <-- 这是 MaterialModel 正确的 search_by_keyword
+        """根据关键词搜索材料，并返回 MaterialCode 和 MaterialName"""
+        conn = get_db_connection()
+        if not conn: return []
+        try:
+            search_query = f"""
+            SELECT MaterialCode, MaterialName
+            FROM {MaterialModel.TABLE_NAME}
+            WHERE MaterialCode LIKE %s OR MaterialName LIKE %s
+            LIMIT %s
+            """
+            params = (f"%{keyword}%", f"%{keyword}%", limit)
+            
+            results_raw = execute_query(conn, search_query, params, fetch_all=True)
+            
+            materials = []
+            for row in results_raw:
+                materials.append({
+                    'MaterialCode': row[0],
+                    'MaterialName': row[1]
+                })
+            return materials
+        except Error as e:
+            current_app.logger.error(f"数据库错误 (MaterialModel.search_by_keyword): {e}", exc_info=True)
+            raise e

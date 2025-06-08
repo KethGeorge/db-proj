@@ -2,6 +2,9 @@
 import axios from 'axios';
 import qs from 'query-string';
 
+import { searchMaterials, type MaterialRecord } from '@/api/materials';
+import { searchProtocols, type ProtocolSearchRecord } from '@/api/protocol';
+import { searchUsers, type UserSearchRecord } from '@/api/userAdmin';
 // ExperimentRecord 接口用于表示单个实验记录的结构
 // 移除 GelTime 字段
 export interface ExperimentRecord {
@@ -27,12 +30,29 @@ export interface ExperimentListRes {
   total: number;
 }
 
+// 移除 Device 搜索 API 和类型
+// import { searchDevices, type DeviceSearchRecord } from '@/api/device';
+
+// 重新导出所有搜索函数和相关类型
+export {
+  searchMaterials,
+  type MaterialRecord,
+  searchProtocols,
+  type ProtocolSearchRecord,
+  searchUsers,
+  type UserSearchRecord,
+  // 移除 Device 相关的导出
+  // searchDevices, type DeviceSearchRecord
+};
+
 // API 函数定义 (保持不变，因为 GelTime 不在请求体中传递)
 /**
  * @description 获取实验列表
  * @param params 查询参数 (页码、每页大小、筛选条件)
  */
-export function queryExperimentList(params: ExperimentParams): Promise<ExperimentListRes> {
+export function queryExperimentList(
+  params: ExperimentParams
+): Promise<ExperimentListRes> {
   return axios.get('/api/experiment', {
     params,
     paramsSerializer: (obj) => {
@@ -45,7 +65,9 @@ export function queryExperimentList(params: ExperimentParams): Promise<Experimen
  * @description 获取单个实验详情
  * @param experimentNo 实验编号
  */
-export function queryExperimentDetail(experimentNo: string): Promise<ExperimentRecord> {
+export function queryExperimentDetail(
+  experimentNo: string
+): Promise<ExperimentRecord> {
   return axios.get(`/api/experiment/${experimentNo}`);
 }
 
@@ -62,7 +84,10 @@ export function createExperiment(data: ExperimentRecord): Promise<any> {
  * @param experimentNo 实验编号
  * @param data 包含要更新字段的对象
  */
-export function updateExperimentInfo(experimentNo: string, data: Partial<ExperimentRecord>): Promise<any> {
+export function updateExperimentInfo(
+  experimentNo: string,
+  data: Partial<ExperimentRecord>
+): Promise<any> {
   return axios.put(`/api/experiment/${experimentNo}`, data);
 }
 

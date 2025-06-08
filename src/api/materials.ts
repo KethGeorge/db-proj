@@ -26,7 +26,9 @@ export interface MaterialListRes {
  * @description 获取材料列表
  * @param params 查询参数 (页码、每页大小、筛选条件)
  */
-export function queryMaterialList(params: MaterialParams): Promise<MaterialListRes> {
+export function queryMaterialList(
+  params: MaterialParams
+): Promise<MaterialListRes> {
   return axios.get('/api/materials', {
     params,
     paramsSerializer: (obj) => {
@@ -39,7 +41,9 @@ export function queryMaterialList(params: MaterialParams): Promise<MaterialListR
  * @description 获取单个材料详情
  * @param materialCode 材料编码
  */
-export function queryMaterialDetail(materialCode: string): Promise<MaterialRecord> {
+export function queryMaterialDetail(
+  materialCode: string
+): Promise<MaterialRecord> {
   return axios.get(`/api/materials/${materialCode}`);
 }
 
@@ -56,7 +60,10 @@ export function createMaterial(data: MaterialRecord): Promise<any> {
  * @param materialCode 材料编码
  * @param data 包含要更新字段的对象 (MaterialName)
  */
-export function updateMaterialInfo(materialCode: string, data: Partial<MaterialRecord>): Promise<any> {
+export function updateMaterialInfo(
+  materialCode: string,
+  data: Partial<MaterialRecord>
+): Promise<any> {
   return axios.put(`/api/materials/${materialCode}`, data);
 }
 
@@ -66,4 +73,23 @@ export function updateMaterialInfo(materialCode: string, data: Partial<MaterialR
  */
 export function deleteMaterial(materialCode: string): Promise<any> {
   return axios.delete(`/api/materials/${materialCode}`);
+}
+
+export type MaterialSearchRecord = MaterialRecord; // 对于 Material，搜索结果就是完整的 Record
+
+/**
+ * @description 搜索材料，用于外键选择器
+ * @param params 搜索参数 (query, limit)
+ */
+export function searchMaterials(params: {
+  query: string;
+  limit?: number;
+}): Promise<MaterialSearchRecord[]> {
+  return axios.get('/api/materials/search', {
+    // 注意是 /api/materials/search (复数)
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
+  });
 }

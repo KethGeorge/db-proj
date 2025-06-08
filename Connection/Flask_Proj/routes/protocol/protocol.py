@@ -153,3 +153,29 @@ class ProtocolModel:
         except Error as e:
             current_app.logger.error(f"数据库错误 (ProtocolModel.get_paginated_list): {e}")
             raise e
+    @staticmethod
+    def search_by_keyword(keyword, limit=10):
+        """根据关键词搜索协议，并返回 ProtocolNo 和 NSN"""
+        conn = get_db_connection()
+        if not conn: return []
+        try:
+            search_query = f"""
+            SELECT ProtocolNo, NSN
+            FROM {ProtocolModel.TABLE_NAME}
+            WHERE ProtocolNo LIKE %s OR NSN LIKE %s
+            LIMIT %s
+            """
+            params = (f"%{keyword}%", f"%{keyword}%", limit)
+            
+            results_raw = execute_query(conn, search_query, params, fetch_all=True)
+            
+            protocols = []
+            for row in results_raw:
+                protocols.append({
+                    'ProtocolNo': row[0],
+                    'NSN': row[1] # NSN 作为描述性字段
+                })
+            return protocols
+        except Error as e:
+            current_app.logger.error(f"数据库错误 (ProtocolModel.search_by_keyword): {e}", exc_info=True)
+            raise e

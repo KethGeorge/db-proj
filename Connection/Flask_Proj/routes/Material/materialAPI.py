@@ -210,3 +210,22 @@ def delete_material(material_code):
     except Exception as e:
         current_app.logger.error(f"处理 /api/materials/{material_code} DELETE 请求错误: {e}", exc_info=True)
         return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)
+
+@material_bp.route('/materials/search', methods=['GET'])
+@token_required
+def search_materials_api():
+    query_param = request.args.get('query', '').strip()
+    limit = int(request.args.get('limit', 10))
+
+    current_app.logger.info(f"Received search request for materials with query: '{query_param}' and limit: {limit}")
+
+    try:
+        materials = MaterialModel.search_by_keyword(query_param, limit)
+        
+        return success_response_wrap(materials, '材料搜索成功')
+    except Error as db_error:
+        current_app.logger.error(f"数据库操作错误 (search_materials_api): {db_error}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误（数据库）: {db_error}', 50000)
+    except Exception as e:
+        current_app.logger.error(f"处理 /api/materials/search GET 请求错误: {e}", exc_info=True)
+        return fail_response_wrap(None, f'服务器内部错误: {e}', 50000)

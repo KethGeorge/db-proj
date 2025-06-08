@@ -278,12 +278,11 @@
 
 <script lang="ts" setup>
   import { ref, reactive, computed, onMounted, nextTick } from 'vue';
-  import { Message } from '@arco-design/web-vue';
+  import { Message, FormInstance } from '@arco-design/web-vue';
   import useLoading from '@/hooks/loading';
   import { createExperiment, ExperimentRecord } from '@/api/experiment';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
   import dayjs from 'dayjs';
   import duration from 'dayjs/plugin/duration';
   import staticImage1Url from '@/assets/images/63.png';

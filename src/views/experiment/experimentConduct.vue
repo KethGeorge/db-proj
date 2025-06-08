@@ -125,8 +125,11 @@
                     },
                   ]"
                 >
-                  <a-input
+                  <SearchSelect
                     v-model="materialCodeDataComputed"
+                    :api-function="searchMaterials"
+                    key-field="MaterialCode"
+                    label-field="MaterialName"
                     :placeholder="
                       $t('experiment.form.placeholder.MaterialCode')
                     "
@@ -147,8 +150,12 @@
                   },
                 ]"
               >
-                <a-input
+                <SearchSelect
                   v-model="protocolNoDataComputed"
+                  :api-function="searchProtocols"
+                  key-field="ProtocolNo"
+                  label-field="ProtocolNo"
+                  description-field="NSN"
                   :placeholder="$t('experiment.form.placeholder.ProtocolNo')"
                 />
               </a-form-item>
@@ -164,8 +171,11 @@
                   },
                 ]"
               >
-                <a-input
+                <SearchSelect
                   v-model="formDataUserNoComputed"
+                  :api-function="searchUsers"
+                  key-field="UserNo"
+                  label-field="UserName"
                   :placeholder="$t('experiment.form.placeholder.UserNo')"
                 />
               </a-form-item>
@@ -289,6 +299,11 @@
   import staticImage2Url from '@/assets/images/63FINAL.png';
   import experimentVideoUrl from '@/assets/images/expVideo.mp4';
   import experimentGifUrl from '@/assets/images/cat.gif';
+  import SearchSelect from '@/components/searchSelect/index.vue';
+
+  import { searchMaterials, type MaterialRecord } from '@/api/materials';
+  import { searchProtocols, type ProtocolSearchRecord } from '@/api/protocol';
+  import { searchUsers, type UserSearchRecord } from '@/api/userAdmin';
 
   dayjs.extend(duration);
 

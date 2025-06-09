@@ -177,7 +177,11 @@
       dataIndex: 'OperationType',
       width: 120,
     },
-    { title: t('audit.columns.UserNo'), dataIndex: 'UserNo', width: 120 },
+    {
+      title: t('audit.columns.Operator'),
+      dataIndex: 'OperatorUserName',
+      width: 120,
+    },
     {
       title: t('audit.columns.EntityType'),
       dataIndex: 'EntityType',

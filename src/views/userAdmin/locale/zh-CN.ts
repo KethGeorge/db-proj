@@ -46,7 +46,8 @@ export default {
   'userAdmin.actions.refresh': '刷新',
   'userAdmin.actions.density': '密度',
   'userAdmin.actions.columnSetting': '列设置',
-
+  'userAdmin.columns.operations.viewLogs': '修改记录', // 按钮文本
+  'userAdmin.logViewer.title': '用户 [{name}] 的修改记录', // 弹窗标题
   // --- UserList.vue 的表格列头键 ---
   'userAdmin.columns.index': '#',
   'userAdmin.columns.UserNo': '账户编号',

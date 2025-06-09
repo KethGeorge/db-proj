@@ -19,4 +19,7 @@ export default {
   'audit.form.placeholder.EntityID': '请输入实体ID',
   'audit.form.placeholder.UserNo': '请输入操作用户编号',
   'audit.form.placeholder.OperationType': '请选择操作类型',
+  'audit.columns.Operator': '操作者', // 新增或修改
+  //   'audit.columns.UserNo': '操作用户编号', // 可以保留，或改为 OperatorUserNo
+  //   'audit.form.placeholder.UserNo': '请输入操作用户编号',
 };

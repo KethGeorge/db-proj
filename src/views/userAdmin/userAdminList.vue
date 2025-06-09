@@ -205,10 +205,23 @@
                 {{ $t('userAdmin.columns.operations.delete') }}
               </a-button>
             </a-popconfirm>
+            <a-button
+              v-permission="['admin']"
+              type="text"
+              size="small"
+              @click="handleViewLogs(record)"
+            >
+              {{ $t('userAdmin.columns.operations.viewLogs') }}
+            </a-button>
           </a-space>
         </template>
       </a-table>
     </a-card>
+    <ModificationLogViewer
+      v-model:visible="logViewerState.visible"
+      :user-no="logViewerState.userNo"
+      :user-name="logViewerState.userName"
+    />
   </div>
 </template>
 
@@ -229,6 +242,7 @@
   import Sortable from 'sortablejs';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
+  import ModificationLogViewer from '@/components/modificationLogViewer/index.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -329,6 +343,11 @@
       value: 'guest',
     },
   ]);
+  const logViewerState = reactive({
+    visible: false,
+    userNo: '',
+    userName: '',
+  });
 
   const fetchData = async (
     params: UserParams = { current: 1, pageSize: 20 }
@@ -352,6 +371,12 @@
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewLogs = (record: UserRecord) => {
+    logViewerState.userNo = record.UserNo ?? '';
+    logViewerState.userName = record.UserName;
+    logViewerState.visible = true;
   };
 
   const search = () => {

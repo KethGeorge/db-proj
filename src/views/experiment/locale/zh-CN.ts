@@ -62,6 +62,8 @@ export default {
   'experiment.form.title.default': '实验记录信息',
 
   'experiment.form.validation.ExperimentNoRequired': '实验编号不能为空',
+  'experiment.form.validation.MaterialCodeRequired': '材料编码不能为空',
+  'experiment.form.validation.ProtocolNoRequired': '策略编码不能为空',
   'experiment.form.validation.ExperimentNoLength':
     '实验编号长度不能超过16个字符',
   'experiment.form.validation.MaterialCodeLength':

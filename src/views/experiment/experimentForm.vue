@@ -496,24 +496,24 @@ const handleDeviceInputValueChange = (value: string) => { /* ... * / };
       }
       // DeviceNo (因为需求中已移除，所以这里的逻辑也移除)
       /*
-            if (formData.DeviceNo) {
-                console.log("Fetching initial Device for:", formData.DeviceNo);
-                try {
-                    const currentDevice = await searchDevices({ query: formData.DeviceNo });
-                    if (currentDevice.length > 0 && currentDevice[0].DeviceNo === formData.DeviceNo) {
-                        if (!deviceOptions.value.some(item => item.DeviceNo === currentDevice[0].DeviceNo)) {
-                            deviceOptions.value.push(currentDevice[0]);
-                        }
-                    } else {
-                        console.log("Initial Device not found or mismatched for:", formData.DeviceNo);
-                        formData.DeviceNo = undefined;
-                    }
-                } catch (e) {
-                    console.error('加载已选设备信息失败:', e);
-                    formData.DeviceNo = undefined;
-                }
-            }
-            */
+              if (formData.DeviceNo) {
+                  console.log("Fetching initial Device for:", formData.DeviceNo);
+                  try {
+                      const currentDevice = await searchDevices({ query: formData.DeviceNo });
+                      if (currentDevice.length > 0 && currentDevice[0].DeviceNo === formData.DeviceNo) {
+                          if (!deviceOptions.value.some(item => item.DeviceNo === currentDevice[0].DeviceNo)) {
+                              deviceOptions.value.push(currentDevice[0]);
+                          }
+                      } else {
+                          console.log("Initial Device not found or mismatched for:", formData.DeviceNo);
+                          formData.DeviceNo = undefined;
+                      }
+                  } catch (e) {
+                      console.error('加载已选设备信息失败:', e);
+                      formData.DeviceNo = undefined;
+                  }
+              }
+              */
       // --- 编辑/查看模式下，加载外键对应的显示名称 END ---
     } catch (error: any) {
       Message.error(

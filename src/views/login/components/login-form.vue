@@ -103,7 +103,7 @@
         console.log('redirect', redirect);
         console.log('othersQuery', othersQuery);
         router.push({
-          name: (redirect as string) || 'Workplace',
+          name: (redirect as string) || 'ExperimentAdminConduct',
           query: {
             ...othersQuery,
           },

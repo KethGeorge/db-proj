@@ -234,6 +234,7 @@
                     message: $t('experiment.form.validation.StartTimeRequired'),
                   },
                 ]"
+                validate-trigger="blur"
               >
                 <a-time-picker
                   v-model="startTimeDataComputed"
@@ -254,6 +255,7 @@
                     message: $t('experiment.form.validation.EndTimeRequired'),
                   },
                 ]"
+                validate-trigger="blur"
               >
                 <a-time-picker
                   v-model="endTimeDataComputed"
@@ -355,6 +357,7 @@
       set: (value: number | undefined) => {
         (experimentData[key] as number | null | undefined) =
           value === undefined ? null : value;
+        experimentDataFormRef.value?.validateField(key);
       },
     });
 
@@ -373,6 +376,7 @@
       set: (value: string | undefined) => {
         (experimentData[key] as string | null | undefined) =
           value === undefined || value === '' ? null : value;
+        experimentDataFormRef.value?.validateField(key);
       },
     });
 
@@ -389,8 +393,12 @@
         return value === null ? undefined : (value as string | undefined);
       },
       set: (value: string | undefined) => {
+        // 当组件值为空或 undefined 时，将模型中的值设为 null
         experimentData[key] =
           value === undefined || value === '' ? null : value;
+
+        // 移除所有手动的 clearValidate 和 validateField 调用。
+        // a-form-item 会在 'change' 事件后自动处理校验，无需手动干预。
       },
     });
 

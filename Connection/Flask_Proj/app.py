@@ -23,6 +23,7 @@ from routes.device.deviceAPI import device_bp  # 设备相关的蓝图
 from routes.protocol.protocolAPI import protocol_bp  # 协议相关的蓝图
 from routes.experiment.experimentAPI import experiment_bp  # 实验相关的蓝图
 from routes.expReport.expReportAPI import report_bp  # 实验报告相关的蓝图
+from routes.modification.modificationAPI import modification_bp  # 审计日志相关的蓝图
 
 def create_app():
     app = Flask(__name__)
@@ -42,6 +43,7 @@ def create_app():
     app.register_blueprint(protocol_bp, url_prefix='/api')  # 注册协议相关蓝图
     app.register_blueprint(experiment_bp, url_prefix='/api')  # 注册实验相关蓝图
     app.register_blueprint(report_bp, url_prefix='/api')  # 注册实验报告相关蓝图
+    app.register_blueprint(modification_bp, url_prefix='/api')  # 注册审计日志相关蓝图
     # 错误处理器
     app.logger.info("应用上下文已创建，数据库表和初始用户已设置。")
     @app.errorhandler(404)

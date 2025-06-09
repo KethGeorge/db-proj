@@ -35,6 +35,7 @@ import localeNS2 from '@/views/NS2/locale/zh-CN';
 // import localeUserQuery from '@/views/UserQuery/locale/zh-CN';
 import localeUserAdmin from '@/views/userAdmin/locale/zh-CN';
 import localeExperiment from '@/views/experiment/locale/zh-CN';
+import localeExperimentReport from '@/views/expReport/locale/zh-CN';
 // Final line
 import localeSettings from './zh-CN/settings';
 
@@ -82,4 +83,5 @@ export default {
   ...localeNS2,
   ...localeMaterialAdmin,
   ...localeExperiment,
+  ...localeExperimentReport,
 };

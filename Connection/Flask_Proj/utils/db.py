@@ -254,6 +254,70 @@ def create_initial_tables_and_users():
     except Exception as e: # 捕获其他非数据库错误
         current_app.logger.error(f"创建初始用户或表时发生未知错误: {e}", exc_info=True)
         conn.rollback() # 确保回滚
+    
+    try:
+        cursor = conn.cursor()
+
+        # 9. 整体实验报告表 (ExpReport)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS ExpReport (
+                ExperimentCode CHAR(16) PRIMARY KEY NOT NULL,
+                ExperimentNo CHAR(16) NOT NULL,
+                ExperimentName VARCHAR(20),
+                ExperimentalStatus VARCHAR(20),
+                FOREIGN KEY (ExperimentNo) REFERENCES experiment(ExperimentNo) ON DELETE CASCADE
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'ExpReport' table checked/created.")
+
+        # 10a. 部分实验表单：加热实验 (HEC)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS HEC (
+                HEC CHAR(16) PRIMARY KEY NOT NULL,
+                Temperature FLOAT(6),
+                Time1 TIME,
+                SafeArea FLOAT(6),
+                ExperimentCode CHAR(16) NOT NULL,
+                FOREIGN KEY (ExperimentCode) REFERENCES ExpReport(ExperimentCode) ON DELETE CASCADE
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'HEC' table checked/created.")
+
+        # 10b. 部分实验表单：搅拌实验 (MEC)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS MEC (
+                MEC CHAR(16) PRIMARY KEY NOT NULL,
+                HeightError FLOAT(6),
+                PlainError FLOAT(6),
+                ErrorArea FLOAT(6),
+                SpeedError FLOAT(6),
+                Time2 TIME,
+                ExperimentCode CHAR(16) NOT NULL,
+                FOREIGN KEY (ExperimentCode) REFERENCES ExpReport(ExperimentCode) ON DELETE CASCADE
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'MEC' table checked/created.")
+
+        # 10c. 部分实验表单：测定实验 (MTEC)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS MTEC (
+                MTEC CHAR(16) PRIMARY KEY NOT NULL,
+                PhotoPath VARCHAR(20),
+                IsGel BOOL,
+                Time3 TIME,
+                ExperimentCode CHAR(16) NOT NULL,
+                FOREIGN KEY (ExperimentCode) REFERENCES ExpReport(ExperimentCode) ON DELETE CASCADE
+            );
+        """)
+        conn.commit()
+        current_app.logger.info("'MTEC' table checked/created.")
+        
+    except Error as e:
+        current_app.logger.error(f"创建实验报告相关表失败: {e}", exc_info=True)
+        conn.rollback()
     # 移除 finally: cursor.close(); conn.close()
     # 因为 get_db_connection() 已经把连接放到了 g.db，
     # 会在 app.py 的 @app.teardown_appcontext 中被关闭。

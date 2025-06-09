@@ -147,9 +147,9 @@ def create_initial_tables_and_users():
         current_app.logger.info("Initial users checked/created.")
 
 
-        # 检查并创建 'devices' 表
+        # 检查并创建 'device' 表
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS devices (
+            CREATE TABLE IF NOT EXISTS device (
                 DeviceNo VARCHAR(50) PRIMARY KEY,
                 DeviceName VARCHAR(100) NOT NULL,
                 DeviceUsage TEXT,
@@ -160,7 +160,7 @@ def create_initial_tables_and_users():
             );
         """)
         conn.commit()
-        current_app.logger.info("'devices' table checked/created.")
+        current_app.logger.info("'device' table checked/created.")
 
         # 检查并创建 'national_standard' 表
         cursor.execute("""

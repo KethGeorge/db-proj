@@ -18,7 +18,9 @@
                 >
                   <a-input
                     v-model="formModel.UserNo"
-                    :placeholder="$t('userAdmin.form.UserNo.placeholder')"
+                    :placeholder="
+                      $t('userAdmin.form.UserNo.placeholder.notCreate')
+                    "
                   />
                 </a-form-item>
               </a-col>

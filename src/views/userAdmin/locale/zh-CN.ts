@@ -38,6 +38,7 @@ export default {
   'userAdmin.form.placeholder.Telephone': '请输入用户电话（13字符以内）',
   'userAdmin.form.Telephone.placeholder': '请输入用户电话（13字符以内）',
   'userAdmin.form.label.Telephone': '用户电话',
+  'userAdmin.form.UserNo.placeholder.notCreate': '请输入用户编号（8字符以内）',
   // --- UserList.vue 的搜索和操作按钮键 ---
   'userAdmin.form.search': '查询',
   'userAdmin.form.reset': '重置',

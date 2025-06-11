@@ -36,7 +36,6 @@
           <h3>{{ $t('experiment.conduct.runningTitle') }}</h3>
           <div class="media-player">
             <video
-              v-if="mediaType === 'video'"
               ref="videoPlayer"
               :src="experimentVideo"
               controls
@@ -47,23 +46,16 @@
             >
               Your browser does not support the video tag.
             </video>
-            <img
-              v-else-if="mediaType === 'gif'"
-              :src="experimentGif"
-              alt="Experiment GIF"
+            <video
+              ref="videoPlayer"
+              :src="experimentVideo2"
+              controls
+              autoplay
+              muted
               class="experiment-media"
-              @load="onMediaLoaded"
-            />
-            <a-spin
-              v-if="loadingMedia"
-              tip="加载中..."
-              style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-              "
-            />
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
           <a-button
             type="text"
@@ -297,9 +289,10 @@
   import { useI18n } from 'vue-i18n';
   import dayjs from 'dayjs';
   import duration from 'dayjs/plugin/duration';
-  import staticImage1Url from '@/assets/images/63.png';
-  import staticImage2Url from '@/assets/images/63FINAL.png';
+  import staticImage1Url from '@/assets/images/Pic1.png';
+  import staticImage2Url from '@/assets/images/Pic2.png';
   import experimentVideoUrl from '@/assets/images/expVideo.mp4';
+  import experimentVideo2Url from '@/assets/images/expVideo2.mp4';
   import experimentGifUrl from '@/assets/images/cat.gif';
   import SearchSelect from '@/components/searchSelect/index.vue';
 
@@ -320,6 +313,7 @@
   const staticImage1 = ref(staticImage1Url); // 使用导入的 URL
   const staticImage2 = ref(staticImage2Url);
   const experimentVideo = ref(experimentVideoUrl);
+  const experimentVideo2 = ref(experimentVideo2Url);
   const experimentGif = ref(experimentGifUrl);
   const mediaType = ref<'video' | 'gif'>('video'); // 默认使用视频
 
@@ -660,12 +654,23 @@
   .media-player {
     position: relative;
     display: flex;
+    flex-direction: column;
+
+    /* (可选) 从顶部开始排列，而不是垂直居中 */
+    gap: 16px;
+
+    /*  <-- 这是关键的修改！将排列方向改为垂直 */
     align-items: center;
-    justify-content: center;
+
+    /*  这现在变成了水平居中，正好是你需要的 */
+    justify-content: flex-start;
+
+    /*  (推荐) 在视频和GIF之间添加16像素的间距 */
     width: 100%;
     max-width: 600px;
     min-height: 300px;
     margin-bottom: 20px;
+    padding: 16px 0;
     background-color: #000;
 
     .experiment-media {

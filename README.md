@@ -37,7 +37,7 @@ python app.py
 
 ### 配置数据库
 
-数据库的名字为 `devexp`, 可以通过 `\Connection\MySQL_Commands\DB061003.sql` 的备份文件创建。
+数据库的名字为 `devexp`, 可以通过 `\Connection\MySQL_Commands\DBRevised.sql` 的备份文件创建。
 
 ## 存在的问题（Updated 2025/05/28）
 

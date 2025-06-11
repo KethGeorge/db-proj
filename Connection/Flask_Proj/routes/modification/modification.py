@@ -95,8 +95,8 @@ class ModificationModel:
         
         try:
             # 查询条件现在可以直接在视图上执行
-            where_clause = "(OperatorUserNo = %s OR (EntityType = 'User' AND EntityID = %s))"
-            params = (user_no, user_no)
+            where_clause = "(OperatorUserNo = %s )"
+            params = (user_no,)
 
             # 获取总数
             count_query = f"SELECT COUNT(*) FROM {ModificationModel.VIEW_NAME} WHERE {where_clause}"

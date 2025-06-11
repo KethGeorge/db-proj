@@ -8,7 +8,7 @@
 
 ### 下载
 
-上面有包可以下载，下载全套代码。
+从右边的 release 下载
 
 ### 配置前端
 
@@ -38,6 +38,16 @@ python app.py
 ### 配置数据库
 
 数据库的名字为 `devexp`, 可以通过 `\Connection\MySQL_Commands\DBRevised.sql` 的备份文件创建。
+
+数据库操作的账户如下，你可以通过如下的命令创建：
+
+```
+CREATE USER 'tumu1t'@'localhost' IDENTIFIED BY 'tumumu1tt';
+GRANT USAGE ON *.* TO `tumu1t`@`localhost`;
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, REFERENCES, EXECUTE ON `devexp`.* TO `tumu1t`@`localhost`;
+```
+
+同时，你需要保证
 
 ## 存在的问题（Updated 2025/05/28）
 
